@@ -306,6 +306,90 @@
             opacity: 0.9;
         }
 
+        /* Location Map Styles */
+        .location-map-container {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-top: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .location-map-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .location-map-title {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .map-close-btn {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .map-close-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .location-map {
+            position: relative;
+            height: 300px;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .location-map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 10px;
+        }
+
+        .map-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            border-radius: 10px;
+        }
+
+        /* Mobile responsive map */
+        @media (max-width: 768px) {
+            .location-map {
+                height: 250px;
+            }
+            
+            .location-map-title {
+                font-size: 16px;
+            }
+        }
+
         /* Quran Section */
         .quran-section {
             background: rgba(255, 255, 255, 0.1);
@@ -709,7 +793,23 @@
             <div class="location-status" id="location-status"></div>
             <div class="location-error" id="location-error"></div>
             
-                         <div class="location-help">
+            <!-- Location Map Section -->
+            <div class="location-map-container" id="location-map-container" style="display: none;">
+                <div class="location-map-header">
+                    <div class="location-map-title">🗺️ Your Location Map</div>
+                    <button class="map-close-btn" onclick="hideLocationMap()">×</button>
+                </div>
+                <div class="location-map" id="location-map">
+                    <div class="map-placeholder" id="map-placeholder">
+                        <div style="font-size: 24px; margin-bottom: 10px;">🗺️</div>
+                        <div style="font-size: 16px; font-weight: bold; margin-bottom: 5px;">Interactive Map</div>
+                        <div style="font-size: 14px; opacity: 0.8;">Click "Get Location" to load the map</div>
+                    </div>
+                    <iframe id="location-map-iframe" style="display: none;" frameborder="0" allowfullscreen="true" allow="geolocation" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" loading="lazy"></iframe>
+                </div>
+            </div>
+            
+            <div class="location-help">
                  <div class="location-help-title">💡 Location Help (Target: 50m accuracy)</div>
                  <div class="location-help-text">
                      • Click "Get Location" to use your device's GPS<br>
@@ -1071,6 +1171,9 @@
             locationStatus.textContent = `Location updated successfully! Accuracy: ${accuracy}m`;
             locationBtn.disabled = false;
             locationBtn.textContent = 'Update Location';
+            
+            // Show the location map
+            showLocationMap(latitude, longitude);
         }
 
         function getCityAndCountry(latitude, longitude) {
@@ -1133,6 +1236,43 @@
             locationStatus.textContent = '';
             locationBtn.disabled = false;
             locationBtn.textContent = 'Get Location';
+        }
+
+        // Location Map Functions
+        function showLocationMap(latitude, longitude) {
+            const mapContainer = document.getElementById('location-map-container');
+            const mapPlaceholder = document.getElementById('map-placeholder');
+            const mapIframe = document.getElementById('location-map-iframe');
+            
+            // Show the map container
+            mapContainer.style.display = 'block';
+            
+            // Hide placeholder and show iframe
+            mapPlaceholder.style.display = 'none';
+            mapIframe.style.display = 'block';
+            
+            // Create OpenStreetMap URL with user's location
+            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${longitude-0.01},${latitude-0.01},${longitude+0.01},${latitude+0.01}&layer=mapnik&marker=${latitude},${longitude}&scale=16`;
+            
+            // Load the map
+            mapIframe.src = mapUrl;
+            
+            // Add success message
+            locationStatus.textContent += ' Map loaded with your location!';
+        }
+
+        function hideLocationMap() {
+            const mapContainer = document.getElementById('location-map-container');
+            const mapPlaceholder = document.getElementById('map-placeholder');
+            const mapIframe = document.getElementById('location-map-iframe');
+            
+            // Hide the map container
+            mapContainer.style.display = 'none';
+            
+            // Reset map state
+            mapPlaceholder.style.display = 'flex';
+            mapIframe.style.display = 'none';
+            mapIframe.src = '';
         }
 
         // Navigation functionality

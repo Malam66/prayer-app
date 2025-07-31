@@ -642,6 +642,20 @@
             cursor: not-allowed;
         }
 
+        .mosque-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
+        .location-btn {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+        }
+
+        .location-btn:hover {
+            background: linear-gradient(135deg, #1976D2, #1565C0);
+        }
+
         .mosque-map-container {
             position: relative;
             height: 300px;
@@ -655,6 +669,111 @@
             width: 100%;
             height: 100%;
             background: linear-gradient(135deg, #2c3e50, #34495e);
+            position: relative;
+        }
+
+        .mosque-map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            border-radius: 15px;
+            -webkit-overflow-scrolling: touch;
+            touch-action: manipulation;
+        }
+
+        /* Mobile-specific improvements */
+        @media (max-width: 768px) {
+            .mosque-map-container {
+                height: 250px;
+                margin-bottom: 15px;
+            }
+            
+            .mosque-map iframe {
+                border-radius: 10px;
+                -webkit-overflow-scrolling: touch;
+                touch-action: manipulation;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            
+            .mosque-map-placeholder {
+                border-radius: 10px;
+                padding: 20px;
+            }
+            
+            .location-status {
+                top: 10px;
+                right: 10px;
+                left: 10px;
+                font-size: 11px;
+                padding: 8px 12px;
+                z-index: 1001;
+            }
+            
+            /* Enhanced mobile touch handling */
+            .mosque-btn, .location-btn {
+                min-height: 44px;
+                padding: 12px 20px;
+                font-size: 16px;
+                -webkit-tap-highlight-color: transparent;
+            }
+            
+            .mosque-buttons {
+                gap: 8px;
+            }
+            
+            /* Mobile-specific map container */
+            .mosque-map {
+                -webkit-overflow-scrolling: touch;
+                touch-action: manipulation;
+            }
+            
+            /* Mobile fallback map styles */
+            #mobile-fallback-map {
+                -webkit-overflow-scrolling: touch;
+                touch-action: manipulation;
+                -webkit-touch-callout: none;
+                -webkit-user-select: none;
+                user-select: none;
+            }
+            
+            #mobile-fallback-map button {
+                -webkit-tap-highlight-color: transparent;
+                transition: all 0.3s ease;
+            }
+            
+            #mobile-fallback-map button:active {
+                transform: scale(0.95);
+            }
+        }
+        
+        /* iOS-specific improvements */
+        @media (max-width: 768px) and (-webkit-min-device-pixel-ratio: 2) {
+            .mosque-map iframe {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+            
+            #mobile-fallback-map {
+                -webkit-transform: translateZ(0);
+                transform: translateZ(0);
+            }
+        }
+
+        .mosque-map-placeholder {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+            color: white;
+            text-align: center;
+            border-radius: 15px;
         }
 
         .mosque-map-overlay {
@@ -669,6 +788,27 @@
             justify-content: center;
             color: white;
             text-align: center;
+        }
+
+        .location-status {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 10px 15px;
+            border-radius: 25px;
+            font-size: 12px;
+            z-index: 1000;
+            display: none;
+        }
+
+        .location-status.success {
+            background: rgba(76, 175, 80, 0.9);
+        }
+
+        .location-status.error {
+            background: rgba(244, 67, 54, 0.9);
         }
 
         .mosque-map-title {
@@ -809,6 +949,9 @@
     </div>
 
     <div class="content">
+        <!-- Location Status Indicator -->
+        <div id="locationStatus" class="location-status"></div>
+        
         <!-- Islamic Logo Section -->
         <div class="logo-section">
             <div class="logo-container">
@@ -1078,18 +1221,30 @@
         <div class="mosque-section">
             <div class="mosque-header">
                 <div class="mosque-title">🕌 Find Nearby Mosques</div>
-                <button class="mosque-btn" id="find-mosques-btn">🔍 Find Mosques</button>
-            </div>
-            
-            <div class="mosque-map-container">
-                <div id="mosque-map" class="mosque-map"></div>
-                <div class="mosque-map-overlay">
-                    <div class="mosque-map-info">
-                        <div class="mosque-map-title">Mosque Finder</div>
-                        <div class="mosque-map-description">Click "Find Mosques" to discover nearby Islamic centers and mosques</div>
-                    </div>
+                <div class="mosque-buttons">
+                    <button class="mosque-btn" id="find-mosques-btn">🔍 Find Mosques</button>
+                    <button class="mosque-btn location-btn" id="show-location-btn" onclick="showUserLocation()">📍 Show My Location</button>
                 </div>
             </div>
+            
+                                        <div class="mosque-map-container">
+                                <div id="mosque-map" class="mosque-map">
+                                    <div class="mosque-map-placeholder" id="map-placeholder">
+                                        <div>
+                                            <div style="font-size: 24px; margin-bottom: 10px;">🗺️</div>
+                                            <div style="font-size: 18px; font-weight: bold; margin-bottom: 5px;">Interactive Mosque Map</div>
+                                            <div style="font-size: 14px; opacity: 0.8;">Click "Find Mosques" to load the map</div>
+                                        </div>
+                                    </div>
+                                    <iframe id="map-iframe" style="display: none;" frameborder="0" allowfullscreen="true" allow="geolocation; microphone; camera" sandbox="allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation" loading="lazy"></iframe>
+                                </div>
+                                <div class="mosque-map-overlay">
+                                    <div class="mosque-map-info">
+                                        <div class="mosque-map-title">Mosque Finder</div>
+                                        <div class="mosque-map-description">Click "Find Mosques" to discover nearby Islamic centers and mosques</div>
+                                    </div>
+                                </div>
+                            </div>
             
             <div class="mosque-list" id="mosque-list">
                 <div class="mosque-list-header">
@@ -1105,9 +1260,15 @@
                 <div class="mosque-help-title">💡 Mosque Finder Help</div>
                 <div class="mosque-help-text">
                     • Click "Find Mosques" to search for nearby Islamic centers<br>
+                    • Your location will be shown as a blue pin on the map<br>
+                    • Click "Show My Location" to center the map on your position<br>
                     • Results show mosques within 5km of your location<br>
                     • Each mosque shows distance, rating, and contact info<br>
-                    • Use the map to see exact locations and directions
+                    • Use the map to see exact locations and directions<br>
+                    • 📱 Mobile users: Enhanced mobile map with fallback options<br>
+                    • 📱 Mobile users: If map doesn't load, a fallback button will appear<br>
+                    • 📱 Mobile users: Tap "Open Mobile Map" to view in your browser<br>
+                    • Global location is used consistently for all nearby mosque displays
                 </div>
             </div>
         </div>
@@ -1156,7 +1317,7 @@
         // Location functionality
         const locationBtn = document.getElementById('get-location-btn');
         const locationInfo = document.getElementById('location-info');
-        const locationStatus = document.getElementById('location-status');
+        const locationStatus = document.getElementById('locationStatus');
         const locationError = document.getElementById('location-error');
 
         locationBtn.addEventListener('click', getLocation);
@@ -1578,8 +1739,10 @@
         const mosqueItems = document.getElementById('mosque-items');
         const mosqueCount = document.getElementById('mosque-count');
         const mosqueMapOverlay = document.querySelector('.mosque-map-overlay');
+        const mapPlaceholder = document.getElementById('map-placeholder');
+        const mapIframe = document.getElementById('map-iframe');
 
-        // Sample mosque data (in real app, this would come from API)
+        // Sample mosque data with coordinates (in real app, this would come from API)
         const sampleMosques = [
             {
                 name: "Central Mosque",
@@ -1587,7 +1750,9 @@
                 address: "123 Main Street, Downtown",
                 phone: "+1-555-0123",
                 rating: "4.8",
-                prayerTimes: "Fajr: 5:30 AM, Dhuhr: 1:15 PM"
+                prayerTimes: "Fajr: 5:30 AM, Dhuhr: 1:15 PM",
+                lat: 40.7128,
+                lng: -74.0060
             },
             {
                 name: "Islamic Center",
@@ -1595,7 +1760,9 @@
                 address: "456 Oak Avenue, Westside",
                 phone: "+1-555-0456",
                 rating: "4.6",
-                prayerTimes: "Fajr: 5:25 AM, Dhuhr: 1:10 PM"
+                prayerTimes: "Fajr: 5:25 AM, Dhuhr: 1:10 PM",
+                lat: 40.7200,
+                lng: -74.0100
             },
             {
                 name: "Masjid Al-Noor",
@@ -1603,7 +1770,9 @@
                 address: "789 Pine Street, Eastside",
                 phone: "+1-555-0789",
                 rating: "4.9",
-                prayerTimes: "Fajr: 5:35 AM, Dhuhr: 1:20 PM"
+                prayerTimes: "Fajr: 5:35 AM, Dhuhr: 1:20 PM",
+                lat: 40.7300,
+                lng: -74.0200
             },
             {
                 name: "Community Mosque",
@@ -1611,7 +1780,9 @@
                 address: "321 Elm Road, Northside",
                 phone: "+1-555-0321",
                 rating: "4.7",
-                prayerTimes: "Fajr: 5:28 AM, Dhuhr: 1:12 PM"
+                prayerTimes: "Fajr: 5:28 AM, Dhuhr: 1:12 PM",
+                lat: 40.7400,
+                lng: -74.0300
             },
             {
                 name: "Islamic Society",
@@ -1619,7 +1790,9 @@
                 address: "654 Maple Drive, Southside",
                 phone: "+1-555-0654",
                 rating: "4.5",
-                prayerTimes: "Fajr: 5:32 AM, Dhuhr: 1:18 PM"
+                prayerTimes: "Fajr: 5:32 AM, Dhuhr: 1:18 PM",
+                lat: 40.7500,
+                lng: -74.0400
             }
         ];
 
@@ -1628,21 +1801,344 @@
             findMosquesBtn.disabled = true;
             findMosquesBtn.textContent = '🔍 Searching...';
             
-            // Hide overlay and show map
+            // Hide overlay
             mosqueMapOverlay.style.display = 'none';
-            mosqueMap.style.background = 'linear-gradient(135deg, #2c3e50, #34495e)';
             
-            // Simulate API call delay
-            setTimeout(() => {
-                displayMosques(sampleMosques);
-                findMosquesBtn.disabled = false;
-                findMosquesBtn.textContent = '🔍 Find Mosques';
-            }, 2000);
+            // Enhanced mobile location status
+            const statusMsg = isMobile ? '📱 Getting your mobile location...' : '📍 Getting your location...';
+            locationStatus.textContent = statusMsg;
+            locationStatus.className = 'location-status success';
+            locationStatus.style.display = 'block';
+            
+            // Get user's current location with high accuracy
+            if (navigator.geolocation) {
+                // Enhanced mobile geolocation options
+                const options = {
+                    enableHighAccuracy: true,
+                    timeout: isMobile ? 20000 : 15000, // Longer timeout for mobile
+                    maximumAge: isMobile ? 30000 : 60000 // Shorter cache for mobile
+                };
+                
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        console.log('Location obtained:', position.coords);
+                        const accuracy = Math.round(position.coords.accuracy);
+                        
+                        // Enhanced accuracy checking for mobile
+                        const accuracyThreshold = isMobile ? 100 : 50; // More lenient for mobile
+                        
+                        if (accuracy <= accuracyThreshold) {
+                            const accuracyMsg = isMobile ? 
+                                `📱 Mobile location found! Accuracy: ${accuracy}m` : 
+                                `📍 Location found! Accuracy: ${accuracy}m`;
+                            locationStatus.textContent = accuracyMsg;
+                            locationStatus.className = 'location-status success';
+                            locationStatus.style.display = 'block';
+                            loadInteractiveMap(position.coords.latitude, position.coords.longitude);
+                        } else {
+                            // Show accuracy warning but still use the location
+                            const warningMsg = isMobile ? 
+                                `⚠️ Mobile location accuracy: ${accuracy}m (using anyway)` :
+                                `⚠️ Location accuracy: ${accuracy}m (using anyway)`;
+                            locationStatus.textContent = warningMsg;
+                            locationStatus.className = 'location-status error';
+                            locationStatus.style.display = 'block';
+                            loadInteractiveMap(position.coords.latitude, position.coords.longitude);
+                        }
+                        
+                        setTimeout(() => {
+                            locationStatus.style.display = 'none';
+                        }, 5000);
+                    }, 
+                    function(error) {
+                        console.error('Geolocation error:', error);
+                        let errorMessage = '';
+                        
+                        switch(error.code) {
+                            case error.PERMISSION_DENIED:
+                                errorMessage = isMobile ? 
+                                    'Mobile location permission denied. Please enable location access in your browser settings.' :
+                                    'Please allow location access in your browser settings.';
+                                break;
+                            case error.POSITION_UNAVAILABLE:
+                                errorMessage = isMobile ? 
+                                    'Mobile location unavailable. Please check your GPS and try again.' :
+                                    'Location information unavailable.';
+                                break;
+                            case error.TIMEOUT:
+                                errorMessage = isMobile ? 
+                                    'Mobile location request timed out. Please try again or move to an open area.' :
+                                    'Location request timed out. Please try again.';
+                                break;
+                            default:
+                                errorMessage = isMobile ? 
+                                    'Mobile location error. Please try again.' :
+                                    'Unknown location error.';
+                        }
+                        
+                        locationStatus.textContent = `❌ ${errorMessage}`;
+                        locationStatus.className = 'location-status error';
+                        locationStatus.style.display = 'block';
+                        
+                        setTimeout(() => {
+                            locationStatus.style.display = 'none';
+                        }, 6000);
+                        
+                        loadInteractiveMap(40.7128, -74.0060);
+                    },
+                    options
+                );
+            } else {
+                const errorMsg = isMobile ? 
+                    '❌ Mobile geolocation not supported by your browser' :
+                    '❌ Geolocation not supported by your browser';
+                locationStatus.textContent = errorMsg;
+                locationStatus.className = 'location-status error';
+                locationStatus.style.display = 'block';
+                
+                setTimeout(() => {
+                    locationStatus.style.display = 'none';
+                }, 5000);
+                
+                loadInteractiveMap(40.7128, -74.0060);
+            }
         });
+
+        // Store user's current location globally
+        let userLocation = null;
+        let mapLoaded = false;
+        let mobileMapRetryCount = 0;
+        const MAX_MOBILE_RETRIES = 3;
+        
+        // Enhanced mobile device detection
+        const isMobile = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent);
+        const isAndroid = /Android/.test(navigator.userAgent);
+        
+        // Mobile-specific map handling with fallback
+        function loadInteractiveMap(centerLat, centerLng) {
+            try {
+                // Store user's location globally
+                userLocation = { lat: centerLat, lng: centerLng };
+                console.log('Global user location set:', userLocation);
+                
+                // Show loading status for mobile
+                if (isMobile) {
+                    locationStatus.textContent = '📱 Loading mobile map...';
+                    locationStatus.className = 'location-status success';
+                    locationStatus.style.display = 'block';
+                }
+                
+                // Create an interactive map using OpenStreetMap with user location pin
+                const userPin = `marker=${centerLat},${centerLng}`;
+                const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${centerLng-0.015},${centerLat-0.015},${centerLng+0.015},${centerLat+0.015}&layer=mapnik&${userPin}&scale=16`;
+                
+                // Hide placeholder and show iframe
+                mapPlaceholder.style.display = 'none';
+                mapIframe.style.display = 'block';
+                
+                // Enhanced mobile iframe handling with multiple fallback strategies
+                if (isMobile) {
+                    loadMobileMap(mapUrl, centerLat, centerLng);
+                } else {
+                    // Desktop handling
+                    mapIframe.src = '';
+                    setTimeout(() => {
+                        mapIframe.src = mapUrl;
+                    }, 100);
+                    
+                    // Desktop event handlers
+                    setupMapEventHandlers(false);
+                }
+                
+                // Display mosques after map loads
+                setTimeout(() => {
+                    displayMosques(sampleMosques);
+                    findMosquesBtn.disabled = false;
+                    findMosquesBtn.textContent = '🔍 Find Mosques';
+                }, isMobile ? 4000 : 2000);
+                
+            } catch (error) {
+                console.error('Error loading map:', error);
+                handleMapError(error, centerLat, centerLng);
+            }
+        }
+        
+        // Mobile-specific map loading with multiple strategies
+        function loadMobileMap(mapUrl, centerLat, centerLng) {
+            console.log('Loading mobile map, attempt:', mobileMapRetryCount + 1);
+            
+            // Strategy 1: Clear and reload iframe
+            mapIframe.src = '';
+            mapIframe.removeAttribute('src');
+            
+            setTimeout(() => {
+                // Set mobile-specific attributes
+                mapIframe.setAttribute('allowfullscreen', 'true');
+                mapIframe.setAttribute('allow', 'geolocation; microphone; camera');
+                mapIframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation');
+                mapIframe.setAttribute('loading', 'lazy');
+                
+                // Try loading the map
+                mapIframe.src = mapUrl;
+                
+                // Setup mobile event handlers
+                setupMapEventHandlers(true);
+                
+                // Mobile-specific timeout and retry logic
+                setTimeout(() => {
+                    if (!mapLoaded && mobileMapRetryCount < MAX_MOBILE_RETRIES) {
+                        console.log('Mobile map not loaded, retrying...');
+                        mobileMapRetryCount++;
+                        locationStatus.textContent = `📱 Mobile map retry ${mobileMapRetryCount}/${MAX_MOBILE_RETRIES}...`;
+                        
+                        // Strategy 2: Try with different parameters
+                        const fallbackUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${centerLng-0.02},${centerLat-0.02},${centerLng+0.02},${centerLat+0.02}&layer=mapnik&marker=${centerLat},${centerLng}&scale=14`;
+                        mapIframe.src = fallbackUrl;
+                        
+                        setTimeout(() => {
+                            if (!mapLoaded && mobileMapRetryCount < MAX_MOBILE_RETRIES) {
+                                mobileMapRetryCount++;
+                                locationStatus.textContent = `📱 Mobile map final retry ${mobileMapRetryCount}/${MAX_MOBILE_RETRIES}...`;
+                                
+                                // Strategy 3: Try with minimal parameters
+                                const minimalUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${centerLng-0.01},${centerLat-0.01},${centerLng+0.01},${centerLat+0.01}&layer=mapnik&marker=${centerLat},${centerLng}`;
+                                mapIframe.src = minimalUrl;
+                                
+                                setTimeout(() => {
+                                    if (!mapLoaded) {
+                                        // Final fallback: Show static map with link
+                                        showMobileFallbackMap(centerLat, centerLng);
+                                    }
+                                }, 3000);
+                            }
+                        }, 3000);
+                    }
+                }, 5000);
+                
+            }, 300); // Increased delay for mobile
+        }
+        
+        // Mobile fallback map display
+        function showMobileFallbackMap(centerLat, centerLng) {
+            console.log('Showing mobile fallback map');
+            mapIframe.style.display = 'none';
+            
+            // Create a fallback map container
+            const fallbackContainer = document.createElement('div');
+            fallbackContainer.id = 'mobile-fallback-map';
+            fallbackContainer.style.cssText = `
+                width: 100%;
+                height: 300px;
+                background: linear-gradient(135deg, #4CAF50, #45a049);
+                border-radius: 10px;
+                display: flex;
+                flex-direction: column;
+                justify-content: center;
+                align-items: center;
+                color: white;
+                text-align: center;
+                padding: 20px;
+                margin: 10px 0;
+            `;
+            
+            fallbackContainer.innerHTML = `
+                <div style="font-size: 48px; margin-bottom: 15px;">🗺️</div>
+                <div style="font-size: 18px; font-weight: bold; margin-bottom: 10px;">Interactive Map</div>
+                <div style="font-size: 14px; margin-bottom: 20px; opacity: 0.9;">
+                    Your location: ${centerLat.toFixed(4)}, ${centerLng.toFixed(4)}
+                </div>
+                <button onclick="openMobileMap(${centerLat}, ${centerLng})" style="
+                    background: #FFD700;
+                    color: #333;
+                    border: none;
+                    padding: 12px 24px;
+                    border-radius: 25px;
+                    font-size: 16px;
+                    font-weight: bold;
+                    cursor: pointer;
+                    box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+                ">📱 Open Mobile Map</button>
+                <div style="font-size: 12px; margin-top: 15px; opacity: 0.8;">
+                    Tap to open in your mobile browser
+                </div>
+            `;
+            
+            // Replace iframe with fallback
+            mapIframe.parentNode.insertBefore(fallbackContainer, mapIframe);
+            
+            locationStatus.textContent = '📱 Mobile map fallback loaded!';
+            locationStatus.className = 'location-status success';
+            locationStatus.style.display = 'block';
+            setTimeout(() => {
+                locationStatus.style.display = 'none';
+            }, 3000);
+        }
+        
+        // Open mobile map in new window/tab
+        function openMobileMap(centerLat, centerLng) {
+            const mobileMapUrl = `https://www.openstreetmap.org/?mlat=${centerLat}&mlon=${centerLng}&zoom=15`;
+            window.open(mobileMapUrl, '_blank');
+        }
+        
+        // Setup map event handlers
+        function setupMapEventHandlers(isMobile) {
+            mapIframe.onerror = function() {
+                console.error('Map iframe error');
+                const errorMsg = isMobile ? '❌ Mobile map failed to load. Using fallback.' : '❌ Map failed to load. Please try again.';
+                locationStatus.textContent = errorMsg;
+                locationStatus.className = 'location-status error';
+                locationStatus.style.display = 'block';
+                setTimeout(() => {
+                    locationStatus.style.display = 'none';
+                }, 5000);
+                
+                if (isMobile && !mapLoaded) {
+                    showMobileFallbackMap(userLocation.lat, userLocation.lng);
+                }
+            };
+            
+            mapIframe.onload = function() {
+                console.log('Map loaded successfully');
+                mapLoaded = true;
+                const successMsg = isMobile ? '📱 Mobile map loaded with your location pin!' : '🗺️ Map loaded with your location pin!';
+                locationStatus.textContent = successMsg;
+                locationStatus.className = 'location-status success';
+                locationStatus.style.display = 'block';
+                setTimeout(() => {
+                    locationStatus.style.display = 'none';
+                }, 3000);
+            };
+        }
+        
+        // Handle map errors
+        function handleMapError(error, centerLat, centerLng) {
+            console.error('Map error:', error);
+            const errorMsg = isMobile ? '❌ Mobile map error. Using fallback.' : '❌ Error loading map. Please try again.';
+            locationStatus.textContent = errorMsg;
+            locationStatus.className = 'location-status error';
+            locationStatus.style.display = 'block';
+            setTimeout(() => {
+                locationStatus.style.display = 'none';
+            }, 5000);
+            
+            if (isMobile) {
+                showMobileFallbackMap(centerLat, centerLng);
+            }
+        }
 
         function displayMosques(mosques) {
             mosqueItems.innerHTML = '';
             mosqueCount.textContent = `${mosques.length} found`;
+            
+            // Always use global userLocation for mosque markers
+            if (userLocation) {
+                console.log('Using global userLocation for mosque display:', userLocation);
+                addMosqueMarkersToMap(mosques);
+            } else {
+                console.log('No global userLocation available, using default center');
+                addMosqueMarkersToMap(mosques);
+            }
             
             mosques.forEach((mosque, index) => {
                 const mosqueElement = document.createElement('div');
@@ -1662,6 +2158,7 @@
                         <button class="mosque-action-btn" onclick="getDirections(${index})">🗺️ Directions</button>
                         <button class="mosque-action-btn" onclick="callMosque('${mosque.phone}')">📞 Call</button>
                         <button class="mosque-action-btn" onclick="saveMosque(${index})">❤️ Save</button>
+                        <button class="mosque-action-btn" onclick="showOnMap(${index})">📍 Show on Map</button>
                     </div>
                 `;
                 mosqueItems.appendChild(mosqueElement);
@@ -1671,15 +2168,77 @@
             mosqueList.style.display = 'block';
         }
 
+        function addMosqueMarkersToMap(mosques) {
+            // Always prioritize global userLocation for map center
+            const centerLat = userLocation ? userLocation.lat : mosques[0].lat;
+            const centerLng = userLocation ? userLocation.lng : mosques[0].lng;
+            
+            console.log('Adding mosque markers with center:', { centerLat, centerLng, userLocation });
+            
+            // Create user pin if global location is available
+            const userPin = userLocation ? `marker=${userLocation.lat},${userLocation.lng}` : '';
+            const mosqueMarkers = mosques.map(mosque => `${mosque.lat},${mosque.lng}`).join('|');
+            
+            // Combine user pin and mosque markers
+            const allMarkers = userPin ? `${userPin}&marker=${mosqueMarkers}` : `marker=${mosqueMarkers}`;
+            
+            // Enhanced mobile-friendly map URL with better zoom and bounds
+            const bboxPadding = isMobile ? 0.025 : 0.02;
+            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${centerLng-bboxPadding},${centerLat-bboxPadding},${centerLng+bboxPadding},${centerLat+bboxPadding}&layer=mapnik&${allMarkers}&scale=${isMobile ? '14' : '16'}`;
+            
+            // Enhanced mobile iframe handling
+            if (isMobile) {
+                // Clear iframe completely for mobile
+                mapIframe.src = '';
+                mapIframe.removeAttribute('src');
+                
+                // Force iframe reload with mobile-specific attributes
+                setTimeout(() => {
+                    mapIframe.setAttribute('allowfullscreen', 'true');
+                    mapIframe.setAttribute('allow', 'geolocation; microphone; camera');
+                    mapIframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation');
+                    mapIframe.src = mapUrl;
+                    
+                    // Mobile-specific success message
+                    setTimeout(() => {
+                        locationStatus.textContent = '📱 Mobile map updated with mosque markers!';
+                        locationStatus.className = 'location-status success';
+                        locationStatus.style.display = 'block';
+                        setTimeout(() => {
+                            locationStatus.style.display = 'none';
+                        }, 3000);
+                    }, 2000);
+                }, 200);
+            } else {
+                // Desktop handling
+                mapIframe.src = '';
+                setTimeout(() => {
+                    mapIframe.src = mapUrl;
+                }, 100);
+            }
+        }
+
+        function showOnMap(mosqueIndex) {
+            const mosque = sampleMosques[mosqueIndex];
+            // Center map on specific mosque but keep user location pin
+            const userPin = userLocation ? `marker=${userLocation.lat},${userLocation.lng}` : '';
+            const mosqueMarker = `marker=${mosque.lat},${mosque.lng}`;
+            const allMarkers = userPin ? `${userPin}&${mosqueMarker}` : mosqueMarker;
+            
+            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${mosque.lng-0.005},${mosque.lat-0.005},${mosque.lng+0.005},${mosque.lat+0.005}&layer=mapnik&${allMarkers}`;
+            mapIframe.src = mapUrl;
+        }
+
         function getDirections(mosqueIndex) {
             const mosque = sampleMosques[mosqueIndex];
-            alert(`Getting directions to ${mosque.name} (${mosque.address})`);
-            // In real app, this would open Google Maps or navigation app
+            // Open Google Maps with directions to the mosque
+            const directionsUrl = `https://www.google.com/maps/dir/?api=1&destination=${mosque.lat},${mosque.lng}`;
+            window.open(directionsUrl, '_blank');
         }
 
         function callMosque(phone) {
-            alert(`Calling ${phone}`);
-            // In real app, this would initiate a phone call
+            // Open phone dialer with the mosque's phone number
+            window.open(`tel:${phone}`, '_blank');
         }
 
         function saveMosque(mosqueIndex) {
@@ -1688,8 +2247,60 @@
             // In real app, this would save to local storage
         }
 
+        function showUserLocation() {
+            if (userLocation) {
+                console.log('Showing user location with global coordinates:', userLocation);
+                // Use addMosqueMarkersToMap to show both user location and mosque markers
+                // This function already handles centering on userLocation if it's available
+                addMosqueMarkersToMap(sampleMosques);
+                
+                locationStatus.textContent = '📍 Centered on your location with mosque markers!';
+                locationStatus.className = 'location-status success';
+                locationStatus.style.display = 'block';
+                setTimeout(() => {
+                    locationStatus.style.display = 'none';
+                }, 2000);
+            } else {
+                locationStatus.textContent = '❌ Your location not available. Please find mosques first.';
+                locationStatus.className = 'location-status error';
+                locationStatus.style.display = 'block';
+                setTimeout(() => {
+                    locationStatus.style.display = 'none';
+                }, 3000);
+            }
+        }
+
         // Initialize mosque finder
         mosqueList.style.display = 'none';
+        
+        // Mobile-specific initialization
+        if (isMobile) {
+            // Add mobile-specific event listeners
+            document.addEventListener('DOMContentLoaded', function() {
+                // Ensure iframe is properly configured for mobile
+                const mapIframe = document.getElementById('map-iframe');
+                if (mapIframe) {
+                    mapIframe.setAttribute('allowfullscreen', 'true');
+                    mapIframe.setAttribute('allow', 'geolocation; microphone; camera');
+                    mapIframe.setAttribute('sandbox', 'allow-scripts allow-same-origin allow-forms allow-popups allow-popups-to-escape-sandbox allow-presentation');
+                    mapIframe.setAttribute('loading', 'lazy');
+                }
+                
+                // Add mobile-specific touch handling
+                const mosqueMapContainer = document.querySelector('.mosque-map-container');
+                if (mosqueMapContainer) {
+                    mosqueMapContainer.style.webkitOverflowScrolling = 'touch';
+                    mosqueMapContainer.style.touchAction = 'manipulation';
+                }
+                
+                // Reset mobile retry counter
+                mobileMapRetryCount = 0;
+                mapLoaded = false;
+            });
+            
+            // Mobile-specific console logging
+            console.log('📱 Mobile device detected - enhanced features enabled');
+        }
     </script>
 </body>
 </html> 

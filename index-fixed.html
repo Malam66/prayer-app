@@ -892,6 +892,133 @@
             line-height: 1.4;
         }
 
+        .location-info {
+            margin-bottom: 8px;
+        }
+
+        .city-info, .state-info, .country-info {
+            color: rgba(255, 215, 0, 0.8);
+            font-size: 12px;
+            margin-top: 2px;
+        }
+
+        .contact-info {
+            margin-bottom: 8px;
+        }
+
+        .location-badge {
+            display: inline-block;
+            background: rgba(76, 175, 80, 0.2);
+            color: #4CAF50;
+            font-size: 11px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            border: 1px solid rgba(76, 175, 80, 0.3);
+            margin-top: 5px;
+        }
+
+        .location-badge.generated {
+            background: rgba(255, 152, 0, 0.2);
+            color: #FF9800;
+            border-color: rgba(255, 152, 0, 0.3);
+        }
+
+        /* Location Modal Styles */
+        .location-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+        }
+
+        .location-modal-content {
+            background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+            border: 2px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 20px;
+            max-width: 90%;
+            max-height: 80%;
+            overflow-y: auto;
+            position: relative;
+        }
+
+        .location-modal-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+            padding-bottom: 10px;
+        }
+
+        .location-modal-header h3 {
+            color: #FFD700;
+            margin: 0;
+            font-size: 18px;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: #FFD700;
+            font-size: 24px;
+            cursor: pointer;
+            padding: 0;
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: background 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: rgba(255, 215, 0, 0.2);
+        }
+
+        .location-modal-body {
+            margin-bottom: 15px;
+        }
+
+        .location-detail {
+            color: white;
+            margin-bottom: 8px;
+            font-size: 14px;
+            line-height: 1.4;
+        }
+
+        .location-detail strong {
+            color: #FFD700;
+        }
+
+        .location-modal-actions {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+        }
+
+        .modal-action-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 8px 16px;
+            color: #FFD700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-action-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
         .mosque-actions {
             display: flex;
             gap: 10px;
@@ -1853,6 +1980,11 @@
                             if (distance <= radius / 1000) { // Only include within radius
                                 // Enhanced address construction with more comprehensive data
                                 let address = 'Address not available';
+                                let fullAddress = '';
+                                let city = '';
+                                let state = '';
+                                let country = '';
+                                
                                 if (element.tags) {
                                     const addrParts = [];
                                     
@@ -1861,12 +1993,21 @@
                                     if (element.tags.addr_street) addrParts.push(element.tags.addr_street);
                                     
                                     // Add city, state, postcode
-                                    if (element.tags.addr_city) addrParts.push(element.tags.addr_city);
-                                    if (element.tags.addr_state) addrParts.push(element.tags.addr_state);
+                                    if (element.tags.addr_city) {
+                                        addrParts.push(element.tags.addr_city);
+                                        city = element.tags.addr_city;
+                                    }
+                                    if (element.tags.addr_state) {
+                                        addrParts.push(element.tags.addr_state);
+                                        state = element.tags.addr_state;
+                                    }
                                     if (element.tags.addr_postcode) addrParts.push(element.tags.addr_postcode);
                                     
                                     // Add country if available
-                                    if (element.tags.addr_country) addrParts.push(element.tags.addr_country);
+                                    if (element.tags.addr_country) {
+                                        addrParts.push(element.tags.addr_country);
+                                        country = element.tags.addr_country;
+                                    }
                                     
                                     // If no structured address, try to use any available location info
                                     if (addrParts.length === 0) {
@@ -1876,19 +2017,30 @@
                                     
                                     if (addrParts.length > 0) {
                                         address = addrParts.join(', ');
+                                        fullAddress = address;
                                     }
+                                    
+                                    // Try to get location from other tags
+                                    if (!city && element.tags.city) city = element.tags.city;
+                                    if (!state && element.tags.state) state = element.tags.state;
+                                    if (!country && element.tags.country) country = element.tags.country;
                                 }
                                 
                                 mosques.push({
                                     name: name,
                                     distance: `${distance.toFixed(1)} km`,
                                     address: address,
+                                    fullAddress: fullAddress,
+                                    city: city,
+                                    state: state,
+                                    country: country,
                                     phone: element.tags?.phone || element.tags?.contact_phone || element.tags?.contact_mobile || 'Phone not available',
                                     rating: element.tags?.rating ? element.tags.rating : '4.5',
                                     prayerTimes: "Prayer times not available",
                                     lat: element.lat,
                                     lng: element.lon,
-                                    id: element.id
+                                    id: element.id,
+                                    locationType: 'real'
                                 });
                             }
                         }
@@ -1903,7 +2055,8 @@
                 // If no mosques found, generate some nearby mosques based on user location
                 if (mosques.length === 0) {
                     console.log('No real mosques found, generating nearby mosques');
-                    mosques.push(...generateNearbyMosques(lat, lng));
+                    const generatedMosques = await generateNearbyMosques(lat, lng);
+                    mosques.push(...generatedMosques);
                 }
                 
                 console.log('Final mosques list:', mosques);
@@ -1912,7 +2065,7 @@
             } catch (error) {
                 console.error('Error finding real mosques:', error);
                 // Fallback to generated mosques
-                return generateNearbyMosques(lat, lng);
+                return await generateNearbyMosques(lat, lng);
             }
         }
         
@@ -1929,7 +2082,7 @@
         }
         
         // Function to generate nearby mosques if no real ones found
-        function generateNearbyMosques(lat, lng) {
+        async function generateNearbyMosques(lat, lng) {
             // More realistic and diverse mosque names
             const mosqueNames = [
                 "Masjid Al-Rahman", "Islamic Center", "Masjid Al-Noor", 
@@ -1942,6 +2095,9 @@
             // Get location-based names
             const locationNames = getLocationBasedNames(lat, lng);
             
+            // Get detailed location info for better address generation
+            const locationInfo = await getDetailedLocationInfo(lat, lng);
+            
             const mosques = [];
             for (let i = 0; i < 5; i++) {
                 const angle = (i * 72) * Math.PI / 180; // Distribute in a circle
@@ -1952,16 +2108,29 @@
                 // Use location-based names if available, otherwise use generic names
                 const mosqueName = locationNames[i] || mosqueNames[i];
                 
+                // Generate better address based on location info
+                const addressParts = [];
+                if (locationInfo.city) addressParts.push(`Near ${locationInfo.city}`);
+                if (locationInfo.state) addressParts.push(locationInfo.state);
+                if (locationInfo.country) addressParts.push(locationInfo.country);
+                
+                const address = addressParts.length > 0 ? addressParts.join(', ') : 'Near your location';
+                
                 mosques.push({
                     name: mosqueName,
                     distance: `${distance.toFixed(1)} km`,
-                    address: `Near your location`,
+                    address: address,
+                    fullAddress: locationInfo.fullAddress || `Approximate location near your area`,
+                    city: locationInfo.city || 'Local Area',
+                    state: locationInfo.state || 'Nearby',
+                    country: locationInfo.country || 'Local',
                     phone: "+1-555-0000",
                     rating: (4.2 + Math.random() * 0.6).toFixed(1), // More realistic ratings
                     prayerTimes: "Fajr: 5:30 AM, Dhuhr: 1:15 PM",
                     lat: lat + dLat,
                     lng: lng + dLng,
-                    id: `generated_${i}`
+                    id: `generated_${i}`,
+                    locationType: 'generated'
                 });
             }
             return mosques;
@@ -1985,6 +2154,25 @@
             names.push("Community Islamic Center", "Masjid Al-Iman", "Islamic Society Center", "Masjid Al-Taqwa");
             
             return names;
+        }
+
+        // Function to get detailed location information using reverse geocoding
+        async function getDetailedLocationInfo(lat, lng) {
+            try {
+                const response = await fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${lat}&lon=${lng}&zoom=10&addressdetails=1`);
+                if (response.ok) {
+                    const data = await response.json();
+                    return {
+                        city: data.address?.city || data.address?.town || data.address?.village || '',
+                        state: data.address?.state || data.address?.province || '',
+                        country: data.address?.country || '',
+                        fullAddress: data.display_name || ''
+                    };
+                }
+            } catch (error) {
+                console.error('Error getting detailed location info:', error);
+            }
+            return { city: '', state: '', country: '', fullAddress: '' };
         }
 
         findMosquesBtn.addEventListener('click', function() {
@@ -2041,9 +2229,9 @@
                                     console.log('Real mosques found:', mosques.length);
                                     loadInteractiveMap(position.coords.latitude, position.coords.longitude);
                                 })
-                                .catch(error => {
+                                .catch(async error => {
                                     console.error('Error finding mosques:', error);
-                                    liveMosques = generateNearbyMosques(position.coords.latitude, position.coords.longitude);
+                                    liveMosques = await generateNearbyMosques(position.coords.latitude, position.coords.longitude);
                                     console.log('Using generated mosques as fallback');
                                     loadInteractiveMap(position.coords.latitude, position.coords.longitude);
                                 });
@@ -2063,9 +2251,9 @@
                                     console.log('Real mosques found:', mosques.length);
                                     loadInteractiveMap(position.coords.latitude, position.coords.longitude);
                                 })
-                                .catch(error => {
+                                .catch(async error => {
                                     console.error('Error finding mosques:', error);
-                                    liveMosques = generateNearbyMosques(position.coords.latitude, position.coords.longitude);
+                                    liveMosques = await generateNearbyMosques(position.coords.latitude, position.coords.longitude);
                                     console.log('Using generated mosques as fallback');
                                     loadInteractiveMap(position.coords.latitude, position.coords.longitude);
                                 });
@@ -2110,8 +2298,10 @@
                         }, 6000);
                         
                         // Use fallback location and generate mosques
-                        liveMosques = generateNearbyMosques(40.7128, -74.0060);
-                        loadInteractiveMap(40.7128, -74.0060);
+                        generateNearbyMosques(40.7128, -74.0060).then(mosques => {
+                            liveMosques = mosques;
+                            loadInteractiveMap(40.7128, -74.0060);
+                        });
                     },
                     options
                 );
@@ -2128,8 +2318,10 @@
                 }, 5000);
                 
                 // Use fallback location and generate mosques
-                liveMosques = generateNearbyMosques(40.7128, -74.0060);
-                loadInteractiveMap(40.7128, -74.0060);
+                generateNearbyMosques(40.7128, -74.0060).then(mosques => {
+                    liveMosques = mosques;
+                    loadInteractiveMap(40.7128, -74.0060);
+                });
             }
         });
 
@@ -2378,10 +2570,18 @@
                         <div class="mosque-distance">${mosque.distance}</div>
                     </div>
                     <div class="mosque-details">
-                        <div>📍 ${mosque.address}</div>
-                        <div>📞 ${mosque.phone}</div>
-                        <div>⭐ ${mosque.rating}/5.0</div>
-                        <div>🕌 ${mosque.prayerTimes}</div>
+                        <div class="location-info">
+                            <div>📍 ${mosque.address}</div>
+                            ${mosque.city && mosque.city !== 'Local Area' ? `<div class="city-info">🏙️ ${mosque.city}</div>` : ''}
+                            ${mosque.state && mosque.state !== 'Nearby' ? `<div class="state-info">🏛️ ${mosque.state}</div>` : ''}
+                            ${mosque.country && mosque.country !== 'Local' ? `<div class="country-info">🌍 ${mosque.country}</div>` : ''}
+                        </div>
+                        <div class="contact-info">
+                            <div>📞 ${mosque.phone}</div>
+                            <div>⭐ ${mosque.rating}/5.0</div>
+                            <div>🕌 ${mosque.prayerTimes}</div>
+                        </div>
+                        ${mosque.locationType === 'real' ? '<div class="location-badge">📍 Live Location</div>' : '<div class="location-badge generated">📍 Approximate</div>'}
                     </div>
                     <div class="mosque-actions">
                         <button class="mosque-action-btn" onclick="getDirections(${index})">🗺️ Directions</button>
@@ -2455,7 +2655,70 @@
             const allMarkers = userPin ? `${userPin}&${mosqueMarker}` : mosqueMarker;
             
             const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${mosque.lng-0.005},${mosque.lat-0.005},${mosque.lng+0.005},${mosque.lat+0.005}&layer=mapnik&${allMarkers}`;
+            
+            // Show detailed location information
+            showDetailedLocationInfo(mosque);
             mapIframe.src = mapUrl;
+        }
+
+        function showDetailedLocationInfo(mosque) {
+            // Create a detailed location info modal
+            const modal = document.createElement('div');
+            modal.className = 'location-modal';
+            modal.innerHTML = `
+                <div class="location-modal-content">
+                    <div class="location-modal-header">
+                        <h3>📍 ${mosque.name}</h3>
+                        <button class="close-btn" onclick="this.parentElement.parentElement.parentElement.remove()">×</button>
+                    </div>
+                    <div class="location-modal-body">
+                        <div class="location-detail">
+                            <strong>Distance:</strong> ${mosque.distance}
+                        </div>
+                        <div class="location-detail">
+                            <strong>Address:</strong> ${mosque.address}
+                        </div>
+                        ${mosque.city && mosque.city !== 'Local Area' ? `
+                        <div class="location-detail">
+                            <strong>City:</strong> ${mosque.city}
+                        </div>` : ''}
+                        ${mosque.state && mosque.state !== 'Nearby' ? `
+                        <div class="location-detail">
+                            <strong>State/Province:</strong> ${mosque.state}
+                        </div>` : ''}
+                        ${mosque.country && mosque.country !== 'Local' ? `
+                        <div class="location-detail">
+                            <strong>Country:</strong> ${mosque.country}
+                        </div>` : ''}
+                        <div class="location-detail">
+                            <strong>Phone:</strong> ${mosque.phone}
+                        </div>
+                        <div class="location-detail">
+                            <strong>Rating:</strong> ⭐ ${mosque.rating}/5.0
+                        </div>
+                        <div class="location-detail">
+                            <strong>Location Type:</strong> ${mosque.locationType === 'real' ? '📍 Live Location' : '📍 Approximate Location'}
+                        </div>
+                        ${mosque.fullAddress && mosque.fullAddress !== mosque.address ? `
+                        <div class="location-detail">
+                            <strong>Full Address:</strong> ${mosque.fullAddress}
+                        </div>` : ''}
+                    </div>
+                    <div class="location-modal-actions">
+                        <button class="modal-action-btn" onclick="getDirections(${liveMosques.indexOf(mosque)})">🗺️ Get Directions</button>
+                        <button class="modal-action-btn" onclick="callMosque('${mosque.phone}')">📞 Call Mosque</button>
+                    </div>
+                </div>
+            `;
+            
+            document.body.appendChild(modal);
+            
+            // Add click outside to close
+            modal.addEventListener('click', function(e) {
+                if (e.target === modal) {
+                    modal.remove();
+                }
+            });
         }
 
         function getDirections(mosqueIndex) {

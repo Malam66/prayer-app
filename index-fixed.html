@@ -670,6 +670,12 @@
             gap: 10px;
         }
 
+        .mosque-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+        }
+
         .mosque-status {
             color: white;
             font-size: 14px;
@@ -1176,7 +1182,10 @@
             <div class="section-title">🕌 Nearby Mosques</div>
             <div class="mosque-header">
                 <div class="mosque-status" id="mosque-status">Click "Find Mosques" to discover nearby mosques</div>
-                <button class="mosque-btn" id="find-mosques-btn" onclick="findNearbyMosques()">Find Mosques</button>
+                <div class="mosque-buttons">
+                    <button class="mosque-btn" id="find-mosques-btn" onclick="findNearbyMosques()">Find Mosques</button>
+                    <button class="mosque-btn" onclick="showMyLocationOnMap()">📍 Show My Location</button>
+                </div>
             </div>
             
             <div class="mosque-map-container" id="mosque-map-container">
@@ -1787,30 +1796,71 @@
                     out skel qt;
                 `;
 
-                // Try both queries
+                // Strategy 3: Search for any building with mosque-related names
+                let query3 = `
+                    [out:json][timeout:25];
+                    (
+                        node["building"="mosque"](around:${radius},${userLocation.lat},${userLocation.lng});
+                        way["building"="mosque"](around:${radius},${userLocation.lat},${userLocation.lng});
+                        node["name"~"mosque|masjid|islamic|muslim"](around:${radius},${userLocation.lat},${userLocation.lng});
+                        way["name"~"mosque|masjid|islamic|muslim"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    );
+                    out body;
+                    >>;
+                    out skel qt;
+                `;
+
+                // Try all queries
                 let allMosques = [];
+                let debugInfo = [];
                 
                 try {
+                    console.log('Trying Strategy 1: Muslim religion places...');
                     const response1 = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query1)}`);
                     const data1 = await response1.json();
                     
                     if (data1.elements && data1.elements.length > 0) {
                         allMosques = allMosques.concat(data1.elements);
+                        debugInfo.push(`Strategy 1 found ${data1.elements.length} places`);
+                    } else {
+                        debugInfo.push('Strategy 1: No results');
                     }
                 } catch (error) {
-                    console.log('Strategy 1 failed, trying strategy 2...');
+                    debugInfo.push(`Strategy 1 failed: ${error.message}`);
                 }
 
                 try {
+                    console.log('Trying Strategy 2: All places of worship...');
                     const response2 = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query2)}`);
                     const data2 = await response2.json();
                     
                     if (data2.elements && data2.elements.length > 0) {
                         allMosques = allMosques.concat(data2.elements);
+                        debugInfo.push(`Strategy 2 found ${data2.elements.length} places`);
+                    } else {
+                        debugInfo.push('Strategy 2: No results');
                     }
                 } catch (error) {
-                    console.log('Strategy 2 failed, using fallback...');
+                    debugInfo.push(`Strategy 2 failed: ${error.message}`);
                 }
+
+                try {
+                    console.log('Trying Strategy 3: Buildings and name search...');
+                    const response3 = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query3)}`);
+                    const data3 = await response3.json();
+                    
+                    if (data3.elements && data3.elements.length > 0) {
+                        allMosques = allMosques.concat(data3.elements);
+                        debugInfo.push(`Strategy 3 found ${data3.elements.length} places`);
+                    } else {
+                        debugInfo.push('Strategy 3: No results');
+                    }
+                } catch (error) {
+                    debugInfo.push(`Strategy 3 failed: ${error.message}`);
+                }
+
+                console.log('Debug info:', debugInfo);
+                console.log('Total elements found:', allMosques.length);
 
                 // Filter and process results
                 if (allMosques.length > 0) {
@@ -1822,12 +1872,16 @@
                             const name = (element.tags.name || element.tags['name:en'] || '').toLowerCase();
                             const amenity = element.tags.amenity;
                             const religion = element.tags.religion;
+                            const building = element.tags.building;
                             
                             // Accept if it's explicitly marked as Muslim
                             if (religion === 'muslim') return true;
                             
+                            // Accept if it's marked as a mosque building
+                            if (building === 'mosque') return true;
+                            
                             // Accept if name contains mosque-related terms
-                            const mosqueTerms = ['mosque', 'masjid', 'islamic', 'muslim', 'jamaat', 'masjid'];
+                            const mosqueTerms = ['mosque', 'masjid', 'islamic', 'muslim', 'jamaat', 'islam'];
                             return mosqueTerms.some(term => name.includes(term));
                         })
                         .map(element => {
@@ -1844,6 +1898,8 @@
                         })
                         .sort((a, b) => a.distance - b.distance)
                         .slice(0, 10); // Show top 10 closest mosques
+
+                    console.log('Processed mosques:', processedMosques);
 
                     if (processedMosques.length > 0) {
                         nearbyMosques = processedMosques;
@@ -2012,6 +2068,22 @@
         function getDirections(lat, lon) {
             const directionsUrl = `https://www.openstreetmap.org/directions?from=${userLocation.lat},${userLocation.lng}&to=${lat},${lon}`;
             window.open(directionsUrl, '_blank');
+        }
+
+        function showMyLocationOnMap() {
+            if (!userLocation) {
+                alert('Please get your location first by clicking "Get Location" in the location section.');
+                return;
+            }
+            
+            const mapIframe = document.getElementById('mosque-map-iframe');
+            const bbox = `${userLocation.lng-0.01},${userLocation.lat-0.01},${userLocation.lng+0.01},${userLocation.lat+0.01}`;
+            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${userLocation.lat},${userLocation.lng}&scale=16`;
+            mapIframe.src = mapUrl;
+            
+            // Update status
+            const mosqueStatus = document.getElementById('mosque-status');
+            mosqueStatus.textContent = `Showing your location: ${userLocation.lat.toFixed(6)}, ${userLocation.lng.toFixed(6)}`;
         }
 
 

@@ -1760,63 +1760,128 @@
             mosqueStatus.textContent = 'Searching for nearby mosques...';
 
             try {
-                // Use OpenStreetMap Overpass API to find mosques
-                const radius = 5000; // 5km radius
-                const query = `
+                // Use OpenStreetMap Overpass API to find mosques with multiple search strategies
+                const radius = 10000; // 10km radius for better coverage
+                
+                // Strategy 1: Search for mosques with Muslim religion tag
+                let query1 = `
                     [out:json][timeout:25];
                     (
                         node["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLocation.lat},${userLocation.lng});
                         way["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLocation.lat},${userLocation.lng});
-                        relation["amenity"="place_of_worship"]["religion"="muslim"](around:${radius},${userLocation.lat},${userLocation.lng});
                     );
                     out body;
                     >>;
                     out skel qt;
                 `;
 
-                const response = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query)}`);
-                const data = await response.json();
+                // Strategy 2: Search for any place of worship with mosque-related names
+                let query2 = `
+                    [out:json][timeout:25];
+                    (
+                        node["amenity"="place_of_worship"](around:${radius},${userLocation.lat},${userLocation.lng});
+                        way["amenity"="place_of_worship"](around:${radius},${userLocation.lat},${userLocation.lng});
+                    );
+                    out body;
+                    >>;
+                    out skel qt;
+                `;
 
-                if (data.elements && data.elements.length > 0) {
-                    nearbyMosques = data.elements
-                        .filter(element => element.type === 'node' && element.tags)
-                        .map(element => ({
-                            id: element.id,
-                            name: element.tags.name || element.tags['name:en'] || 'Mosque',
-                            lat: element.lat,
-                            lon: element.lon,
-                            distance: calculateDistance(userLocation.lat, userLocation.lng, element.lat, element.lon)
-                        }))
+                // Try both queries
+                let allMosques = [];
+                
+                try {
+                    const response1 = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query1)}`);
+                    const data1 = await response1.json();
+                    
+                    if (data1.elements && data1.elements.length > 0) {
+                        allMosques = allMosques.concat(data1.elements);
+                    }
+                } catch (error) {
+                    console.log('Strategy 1 failed, trying strategy 2...');
+                }
+
+                try {
+                    const response2 = await fetch(`https://overpass-api.de/api/interpreter?data=${encodeURIComponent(query2)}`);
+                    const data2 = await response2.json();
+                    
+                    if (data2.elements && data2.elements.length > 0) {
+                        allMosques = allMosques.concat(data2.elements);
+                    }
+                } catch (error) {
+                    console.log('Strategy 2 failed, using fallback...');
+                }
+
+                // Filter and process results
+                if (allMosques.length > 0) {
+                    const processedMosques = allMosques
+                        .filter(element => {
+                            // Filter for mosques and Islamic places
+                            if (element.type !== 'node' || !element.tags) return false;
+                            
+                            const name = (element.tags.name || element.tags['name:en'] || '').toLowerCase();
+                            const amenity = element.tags.amenity;
+                            const religion = element.tags.religion;
+                            
+                            // Accept if it's explicitly marked as Muslim
+                            if (religion === 'muslim') return true;
+                            
+                            // Accept if name contains mosque-related terms
+                            const mosqueTerms = ['mosque', 'masjid', 'islamic', 'muslim', 'jamaat', 'masjid'];
+                            return mosqueTerms.some(term => name.includes(term));
+                        })
+                        .map(element => {
+                            const name = element.tags.name || element.tags['name:en'] || 'Mosque';
+                            const distance = calculateDistance(userLocation.lat, userLocation.lng, element.lat, element.lon);
+                            
+                            return {
+                                id: element.id,
+                                name: name,
+                                lat: element.lat,
+                                lon: element.lon,
+                                distance: distance
+                            };
+                        })
                         .sort((a, b) => a.distance - b.distance)
                         .slice(0, 10); // Show top 10 closest mosques
 
-                    displayMosques();
-                    loadMosqueMap();
+                    if (processedMosques.length > 0) {
+                        nearbyMosques = processedMosques;
+                        displayMosques();
+                        loadMosqueMap();
+                        mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques!`;
+                    } else {
+                        // Generate realistic sample mosques
+                        nearbyMosques = generateRealisticSampleMosques();
+                        displayMosques();
+                        loadMosqueMap();
+                        mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques (sample data)!`;
+                    }
                 } else {
-                    // Generate sample mosques if no real data found
-                    nearbyMosques = generateSampleMosques();
+                    // Generate realistic sample mosques
+                    nearbyMosques = generateRealisticSampleMosques();
                     displayMosques();
                     loadMosqueMap();
+                    mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques (sample data)!`;
                 }
 
-                mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques!`;
                 findMosquesBtn.disabled = false;
                 findMosquesBtn.textContent = 'Find Mosques';
 
             } catch (error) {
                 console.error('Error fetching mosques:', error);
-                // Fallback to sample data
-                nearbyMosques = generateSampleMosques();
+                // Fallback to realistic sample data
+                nearbyMosques = generateRealisticSampleMosques();
                 displayMosques();
                 loadMosqueMap();
                 
-                mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques!`;
+                mosqueStatus.textContent = `Found ${nearbyMosques.length} nearby mosques (sample data)!`;
                 findMosquesBtn.disabled = false;
                 findMosquesBtn.textContent = 'Find Mosques';
             }
         }
 
-        function generateSampleMosques() {
+        function generateRealisticSampleMosques() {
             const sampleNames = [
                 'Masjid Al-Noor',
                 'Islamic Center',
@@ -1831,20 +1896,35 @@
             ];
 
             const mosques = [];
+            
+            // Create more realistic mosque locations with proper distance distribution
+            const distances = [0.5, 1.2, 1.8, 2.5, 3.2, 4.0, 4.8, 5.5]; // km from user
+            
             for (let i = 0; i < 8; i++) {
-                const latOffset = (Math.random() - 0.5) * 0.01; // ±0.005 degrees
-                const lngOffset = (Math.random() - 0.5) * 0.01;
+                // Calculate realistic coordinates based on distance
+                const distance = distances[i];
+                const angle = (Math.random() * 2 * Math.PI); // Random direction
+                
+                // Convert distance to coordinate offset (approximate)
+                // 1 degree ≈ 111 km at equator
+                const latOffset = (distance * Math.cos(angle)) / 111;
+                const lngOffset = (distance * Math.sin(angle)) / (111 * Math.cos(userLocation.lat * Math.PI / 180));
                 
                 mosques.push({
                     id: i + 1,
                     name: sampleNames[i],
                     lat: userLocation.lat + latOffset,
                     lon: userLocation.lng + lngOffset,
-                    distance: calculateDistance(userLocation.lat, userLocation.lng, userLocation.lat + latOffset, userLocation.lng + lngOffset)
+                    distance: distance
                 });
             }
             
             return mosques.sort((a, b) => a.distance - b.distance);
+        }
+
+        function generateSampleMosques() {
+            // Keep the old function for backward compatibility
+            return generateRealisticSampleMosques();
         }
 
         function calculateDistance(lat1, lon1, lat2, lon2) {
@@ -1868,10 +1948,19 @@
             nearbyMosques.forEach(mosque => {
                 const mosqueElement = document.createElement('div');
                 mosqueElement.className = 'mosque-item';
+                
+                // Format distance more clearly
+                let distanceText = '';
+                if (mosque.distance < 1) {
+                    distanceText = `${(mosque.distance * 1000).toFixed(0)} meters away`;
+                } else {
+                    distanceText = `${mosque.distance.toFixed(1)} km away`;
+                }
+                
                 mosqueElement.innerHTML = `
                     <div class="mosque-name">🕌 ${mosque.name}</div>
                     <div class="mosque-location">📍 ${mosque.lat.toFixed(6)}, ${mosque.lon.toFixed(6)}</div>
-                    <div class="mosque-distance">📏 ${mosque.distance.toFixed(1)} km away</div>
+                    <div class="mosque-distance">📏 ${distanceText}</div>
                     <div class="mosque-actions">
                         <button class="mosque-action-btn" onclick="showOnMap(${mosque.lat}, ${mosque.lon})">🗺️ Show on Map</button>
                         <button class="mosque-action-btn" onclick="getDirections(${mosque.lat}, ${mosque.lon})">🚶 Get Directions</button>
@@ -1889,9 +1978,26 @@
             mapIframe.style.display = 'block';
             
             // Create map with user location and mosque markers
-            const bbox = `${userLocation.lng-0.01},${userLocation.lat-0.01},${userLocation.lng+0.01},${userLocation.lat+0.01}`;
-            const markers = nearbyMosques.map(mosque => `${mosque.lat},${mosque.lon}`).join('|');
-            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${userLocation.lat},${userLocation.lng}&scale=14`;
+            // Calculate bounding box to include all mosques
+            let minLat = userLocation.lat, maxLat = userLocation.lat;
+            let minLng = userLocation.lng, maxLng = userLocation.lng;
+            
+            nearbyMosques.forEach(mosque => {
+                minLat = Math.min(minLat, mosque.lat);
+                maxLat = Math.max(maxLat, mosque.lat);
+                minLng = Math.min(minLng, mosque.lon);
+                maxLng = Math.max(maxLng, mosque.lon);
+            });
+            
+            // Add padding to bounding box
+            const latPadding = (maxLat - minLat) * 0.2;
+            const lngPadding = (maxLng - minLng) * 0.2;
+            
+            const bbox = `${minLng - lngPadding},${minLat - latPadding},${maxLng + lngPadding},${maxLat + latPadding}`;
+            
+            // Create markers for all mosques
+            const mosqueMarkers = nearbyMosques.map(mosque => `${mosque.lat},${mosque.lon}`).join('|');
+            const mapUrl = `https://www.openstreetmap.org/export/embed.html?bbox=${bbox}&layer=mapnik&marker=${userLocation.lat},${userLocation.lng}&scale=13`;
             
             mapIframe.src = mapUrl;
         }

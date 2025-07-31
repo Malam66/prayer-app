@@ -1,0 +1,1342 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prayer App</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #1e3c72 0%, #2a5298 50%, #4CAF50 100%);
+            min-height: 100vh;
+            color: white;
+        }
+
+        .status-bar {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            padding: 10px 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+        }
+
+        .status-left, .status-right {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .content {
+            padding: 20px;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Islamic Logo Section */
+        .logo-section {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-container {
+            width: 200px;
+            height: 200px;
+            margin: 0 auto 20px;
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .logo-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #FFD700, #FFA500, #FFD700);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+            animation: rotate 20s linear infinite;
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        .geometric-pattern {
+            position: absolute;
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            background: conic-gradient(from 0deg, transparent 0deg, #4CAF50 60deg, transparent 60deg, transparent 120deg, #4CAF50 120deg, transparent 120deg, transparent 180deg, #4CAF50 180deg, transparent 180deg, transparent 240deg, #4CAF50 240deg, transparent 240deg, transparent 300deg, #4CAF50 300deg, transparent 300deg, transparent 360deg);
+            animation: rotate 15s linear infinite reverse;
+        }
+
+        .inner-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #ffffff, #f8f9fa);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .calligraphy {
+            font-size: 32px;
+            color: #4CAF50;
+            font-weight: bold;
+            animation: pulse 3s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .crescent {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 16px;
+            color: #FFD700;
+        }
+
+        .star {
+            position: absolute;
+            bottom: 10px;
+            left: 10px;
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        .app-title {
+            color: white;
+            font-size: 28px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .app-subtitle {
+            color: #FFD700;
+            font-size: 16px;
+        }
+
+        .section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .section-title {
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .prayer-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .prayer-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+
+        .prayer-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .prayer-name {
+            color: #FFD700;
+            font-weight: bold;
+            font-size: 16px;
+            margin-bottom: 5px;
+        }
+
+        .prayer-time {
+            color: white;
+            font-size: 18px;
+            font-weight: bold;
+        }
+
+        .current-time {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            color: white;
+            padding: 15px;
+            border-radius: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .time-label {
+            font-size: 14px;
+            opacity: 0.9;
+            margin-bottom: 5px;
+        }
+
+        .time-value {
+            font-size: 24px;
+            font-weight: bold;
+        }
+
+        /* Location Section */
+        .location-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 15px;
+        }
+
+        .location-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .location-button {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .location-button:hover {
+            transform: translateY(-2px);
+        }
+
+        .location-button:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .location-info {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .location-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            color: white;
+        }
+
+        .location-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .location-label {
+            font-size: 14px;
+            color: #FFD700;
+        }
+
+        .location-value {
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .location-status {
+            text-align: center;
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-top: 10px;
+        }
+
+        .location-error {
+            color: #ff6b6b;
+            text-align: center;
+            font-size: 14px;
+            margin-top: 10px;
+        }
+
+        .location-help {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            padding: 10px;
+            margin-top: 10px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .location-help-title {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .location-help-text {
+            color: white;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        /* Quran Section */
+        .quran-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .quran-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .quran-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .quran-search {
+            background: rgba(255, 255, 255, 0.2);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 20px;
+            padding: 8px 15px;
+            color: white;
+            font-size: 14px;
+            width: 150px;
+        }
+
+        .quran-search::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .quran-chapters {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quran-chapter {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+
+        .quran-chapter:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .chapter-number {
+            color: #FFD700;
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .chapter-name {
+            color: white;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 3px;
+        }
+
+        .chapter-arabic {
+            color: #FFD700;
+            font-size: 12px;
+            opacity: 0.9;
+        }
+
+        .quran-verse {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 15px;
+            padding: 20px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .verse-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .verse-info {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+        }
+
+        .verse-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .verse-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 20px;
+            padding: 5px 12px;
+            color: #FFD700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .verse-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .verse-arabic {
+            color: white;
+            font-size: 18px;
+            line-height: 1.8;
+            text-align: right;
+            margin-bottom: 15px;
+            direction: rtl;
+        }
+
+        .verse-translation {
+            color: rgba(255, 255, 255, 0.9);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .quran-nav {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .quran-nav-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 8px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quran-nav-btn:hover {
+            transform: translateY(-2px);
+        }
+
+        .quran-nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .ramadan-content {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .ramadan-icon {
+            font-size: 48px;
+        }
+
+        .ramadan-text {
+            flex: 1;
+        }
+
+        .ramadan-title {
+            color: #FFD700;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .ramadan-description {
+            color: white;
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .products-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+            gap: 15px;
+        }
+
+        .product-card {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 15px;
+            padding: 15px;
+            text-align: center;
+            transition: all 0.3s ease;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .product-icon {
+            font-size: 32px;
+            margin-bottom: 10px;
+        }
+
+        .product-name {
+            color: white;
+            font-weight: bold;
+            font-size: 14px;
+        }
+
+        .navigation-bar {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            padding: 15px 20px;
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            display: flex;
+            justify-content: space-around;
+            align-items: center;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.2);
+        }
+
+        .nav-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            color: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-2px);
+            color: #FFD700;
+        }
+
+        .nav-icon {
+            font-size: 24px;
+            margin-bottom: 5px;
+        }
+
+        .nav-text {
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .nav-item.active {
+            color: #FFD700;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .logo-container {
+                width: 150px;
+                height: 150px;
+            }
+            
+            .logo-circle {
+                width: 120px;
+                height: 120px;
+            }
+            
+            .geometric-pattern {
+                width: 90px;
+                height: 90px;
+            }
+            
+            .inner-circle {
+                width: 60px;
+                height: 60px;
+            }
+            
+            .calligraphy {
+                font-size: 24px;
+            }
+            
+            .app-title {
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="status-bar">
+        <div class="status-left">
+            <span>📱</span>
+            <span>Prayer App</span>
+        </div>
+        <div class="status-right">
+            <span>📶</span>
+            <span>100%</span>
+            <span>🔋</span>
+        </div>
+    </div>
+
+    <div class="content">
+        <!-- Islamic Logo Section -->
+        <div class="logo-section">
+            <div class="logo-container">
+                <div class="logo-circle">
+                    <div class="geometric-pattern"></div>
+                    <div class="inner-circle">
+                        <div class="calligraphy">☪️</div>
+                    </div>
+                    <div class="crescent">🌙</div>
+                    <div class="star">⭐</div>
+                </div>
+            </div>
+            <div class="app-title">Prayer App</div>
+            <div class="app-subtitle">Islamic Prayer Times & Qibla</div>
+        </div>
+
+        <!-- Prayer Times Section -->
+        <div class="section">
+            <div class="section-title">Prayer Times</div>
+            
+            <div class="current-time">
+                <div class="time-label">Current Time</div>
+                <div class="time-value" id="current-time">--:--</div>
+            </div>
+
+            <div class="prayer-grid">
+                <div class="prayer-card">
+                    <div class="prayer-name">Fajr</div>
+                    <div class="prayer-time">5:30 AM</div>
+                </div>
+                <div class="prayer-card">
+                    <div class="prayer-name">Dhuhr</div>
+                    <div class="prayer-time">12:30 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <div class="prayer-name">Asr</div>
+                    <div class="prayer-time">3:45 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <div class="prayer-name">Maghrib</div>
+                    <div class="prayer-time">6:15 PM</div>
+                </div>
+                <div class="prayer-card">
+                    <div class="prayer-name">Isha</div>
+                    <div class="prayer-time">7:45 PM</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Location Section -->
+        <div class="section">
+            <div class="location-header">
+                <div class="location-title">📍 Live Location</div>
+                <button class="location-button" id="get-location-btn">Get Location</button>
+            </div>
+            
+            <div class="location-info" id="location-info" style="display: none;">
+                <div class="location-item">
+                    <span class="location-label">City:</span>
+                    <span class="location-value" id="city">--</span>
+                </div>
+                <div class="location-item">
+                    <span class="location-label">Country:</span>
+                    <span class="location-value" id="country">--</span>
+                </div>
+                <div class="location-item">
+                    <span class="location-label">Latitude:</span>
+                    <span class="location-value" id="latitude">--</span>
+                </div>
+                <div class="location-item">
+                    <span class="location-label">Longitude:</span>
+                    <span class="location-value" id="longitude">--</span>
+                </div>
+                <div class="location-item">
+                    <span class="location-label">Accuracy:</span>
+                    <span class="location-value" id="accuracy">--</span>
+                </div>
+            </div>
+            
+            <div class="location-status" id="location-status"></div>
+            <div class="location-error" id="location-error"></div>
+            
+                         <div class="location-help">
+                 <div class="location-help-title">💡 Location Help (Target: 50m accuracy)</div>
+                 <div class="location-help-text">
+                     • Click "Get Location" to use your device's GPS<br>
+                     • Allow location access when prompted by your browser<br>
+                     • For 50m accuracy: Go outside or near windows<br>
+                     • Make sure you have an internet connection<br>
+                     • Wait 10-30 seconds for GPS to lock properly<br>
+                     • GPS works best in open areas with clear sky view<br>
+                     • Avoid tall buildings and underground locations<br>
+                     • The app will try multiple methods for best accuracy
+                 </div>
+             </div>
+        </div>
+
+        <!-- Ramadan Section -->
+        <div class="section">
+            <div class="ramadan-content">
+                <div class="ramadan-icon">🕌</div>
+                <div class="ramadan-text">
+                    <div class="ramadan-title">Ramadan Mubarak</div>
+                    <div class="ramadan-description">Blessed month of fasting and prayer</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Quran Section -->
+        <div class="quran-section">
+            <div class="quran-header">
+                <div class="quran-title">📖 Holy Quran</div>
+                <input type="text" class="quran-search" placeholder="Search chapters..." id="quran-search">
+            </div>
+            
+            <div class="quran-chapters" id="quran-chapters">
+                <div class="quran-chapter" data-chapter="1">
+                    <div class="chapter-number">1</div>
+                    <div class="chapter-name">Al-Fatiha</div>
+                    <div class="chapter-arabic">الفاتحة</div>
+                </div>
+                <div class="quran-chapter" data-chapter="2">
+                    <div class="chapter-number">2</div>
+                    <div class="chapter-name">Al-Baqarah</div>
+                    <div class="chapter-arabic">البقرة</div>
+                </div>
+                <div class="quran-chapter" data-chapter="3">
+                    <div class="chapter-number">3</div>
+                    <div class="chapter-name">Aal-Imran</div>
+                    <div class="chapter-arabic">آل عمران</div>
+                </div>
+                <div class="quran-chapter" data-chapter="4">
+                    <div class="chapter-number">4</div>
+                    <div class="chapter-name">An-Nisa</div>
+                    <div class="chapter-arabic">النساء</div>
+                </div>
+                <div class="quran-chapter" data-chapter="5">
+                    <div class="chapter-number">5</div>
+                    <div class="chapter-name">Al-Ma'idah</div>
+                    <div class="chapter-arabic">المائدة</div>
+                </div>
+                <div class="quran-chapter" data-chapter="6">
+                    <div class="chapter-number">6</div>
+                    <div class="chapter-name">Al-An'am</div>
+                    <div class="chapter-arabic">الأنعام</div>
+                </div>
+                <div class="quran-chapter" data-chapter="7">
+                    <div class="chapter-number">7</div>
+                    <div class="chapter-name">Al-A'raf</div>
+                    <div class="chapter-arabic">الأعراف</div>
+                </div>
+                <div class="quran-chapter" data-chapter="8">
+                    <div class="chapter-number">8</div>
+                    <div class="chapter-name">Al-Anfal</div>
+                    <div class="chapter-arabic">الأنفال</div>
+                </div>
+                <div class="quran-chapter" data-chapter="9">
+                    <div class="chapter-number">9</div>
+                    <div class="chapter-name">At-Tawbah</div>
+                    <div class="chapter-arabic">التوبة</div>
+                </div>
+                <div class="quran-chapter" data-chapter="10">
+                    <div class="chapter-number">10</div>
+                    <div class="chapter-name">Yunus</div>
+                    <div class="chapter-arabic">يونس</div>
+                </div>
+                <div class="quran-chapter" data-chapter="36">
+                    <div class="chapter-number">36</div>
+                    <div class="chapter-name">Ya-Sin</div>
+                    <div class="chapter-arabic">يس</div>
+                </div>
+                <div class="quran-chapter" data-chapter="55">
+                    <div class="chapter-number">55</div>
+                    <div class="chapter-name">Ar-Rahman</div>
+                    <div class="chapter-arabic">الرحمن</div>
+                </div>
+                <div class="quran-chapter" data-chapter="67">
+                    <div class="chapter-number">67</div>
+                    <div class="chapter-name">Al-Mulk</div>
+                    <div class="chapter-arabic">الملك</div>
+                </div>
+                <div class="quran-chapter" data-chapter="112">
+                    <div class="chapter-number">112</div>
+                    <div class="chapter-name">Al-Ikhlas</div>
+                    <div class="chapter-arabic">الإخلاص</div>
+                </div>
+                <div class="quran-chapter" data-chapter="113">
+                    <div class="chapter-number">113</div>
+                    <div class="chapter-name">Al-Falaq</div>
+                    <div class="chapter-arabic">الفلق</div>
+                </div>
+                <div class="quran-chapter" data-chapter="114">
+                    <div class="chapter-number">114</div>
+                    <div class="chapter-name">An-Nas</div>
+                    <div class="chapter-arabic">الناس</div>
+                </div>
+            </div>
+            
+            <div id="quran-verses" style="display: none;">
+                <div class="quran-verse">
+                    <div class="verse-header">
+                        <div class="verse-info">Surah Al-Fatiha - Verse 1</div>
+                        <div class="verse-actions">
+                            <button class="verse-btn">🔊 Audio</button>
+                            <button class="verse-btn">❤️ Bookmark</button>
+                        </div>
+                    </div>
+                    <div class="verse-arabic">بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ</div>
+                    <div class="verse-translation">In the name of Allah, the Entirely Merciful, the Especially Merciful.</div>
+                </div>
+                
+                <div class="quran-verse">
+                    <div class="verse-header">
+                        <div class="verse-info">Surah Al-Fatiha - Verse 2</div>
+                        <div class="verse-actions">
+                            <button class="verse-btn">🔊 Audio</button>
+                            <button class="verse-btn">❤️ Bookmark</button>
+                        </div>
+                    </div>
+                    <div class="verse-arabic">الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ</div>
+                    <div class="verse-translation">[All] praise is [due] to Allah, Lord of the worlds.</div>
+                </div>
+                
+                <div class="quran-verse">
+                    <div class="verse-header">
+                        <div class="verse-info">Surah Al-Fatiha - Verse 3</div>
+                        <div class="verse-actions">
+                            <button class="verse-btn">🔊 Audio</button>
+                            <button class="verse-btn">❤️ Bookmark</button>
+                        </div>
+                    </div>
+                    <div class="verse-arabic">الرَّحْمَٰنِ الرَّحِيمِ</div>
+                    <div class="verse-translation">The Entirely Merciful, the Especially Merciful.</div>
+                </div>
+                
+                <div class="quran-nav">
+                    <button class="quran-nav-btn" id="prev-verse">← Previous</button>
+                    <button class="quran-nav-btn" id="next-verse">Next →</button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Products Section -->
+        <div class="section">
+            <div class="section-title">Islamic Products</div>
+            <div class="products-grid">
+                <div class="product-card">
+                    <div class="product-icon">📿</div>
+                    <div class="product-name">Prayer Beads</div>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🕌</div>
+                    <div class="product-name">Prayer Mat</div>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">📖</div>
+                    <div class="product-name">Quran</div>
+                </div>
+                <div class="product-card">
+                    <div class="product-icon">🕯️</div>
+                    <div class="product-name">Incense</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Navigation Bar -->
+    <div class="navigation-bar">
+        <div class="nav-item active">
+            <div class="nav-icon">🏠</div>
+            <div class="nav-text">Home</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">🕐</div>
+            <div class="nav-text">Prayer</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">🧭</div>
+            <div class="nav-text">Qibla</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">📚</div>
+            <div class="nav-text">Quran</div>
+        </div>
+        <div class="nav-item">
+            <div class="nav-icon">⚙️</div>
+            <div class="nav-text">Settings</div>
+        </div>
+    </div>
+
+    <script>
+        // Update current time
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('en-US', {
+                hour: '2-digit',
+                minute: '2-digit',
+                hour12: true
+            });
+            document.getElementById('current-time').textContent = timeString;
+        }
+
+        // Update time every second
+        updateTime();
+        setInterval(updateTime, 1000);
+
+        // Location functionality
+        const locationBtn = document.getElementById('get-location-btn');
+        const locationInfo = document.getElementById('location-info');
+        const locationStatus = document.getElementById('location-status');
+        const locationError = document.getElementById('location-error');
+
+        locationBtn.addEventListener('click', getLocation);
+
+        function getLocation() {
+            locationBtn.disabled = true;
+            locationBtn.textContent = 'Getting Location...';
+            locationStatus.textContent = 'Getting your location with maximum accuracy...';
+            locationError.textContent = '';
+            locationInfo.style.display = 'none';
+
+            if (navigator.geolocation) {
+                // Try multiple methods for better accuracy
+                tryHighAccuracyGPS();
+            } else {
+                showError({ code: 0, message: 'Geolocation is not supported by this browser.' });
+            }
+        }
+
+        function tryHighAccuracyGPS() {
+            // Method 1: Ultra high accuracy with long timeout
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    if (position.coords.accuracy <= 50) {
+                        showPosition(position);
+                    } else {
+                        // If accuracy > 50m, try method 2
+                        locationStatus.textContent = 'Accuracy too low, trying alternative method...';
+                        tryAlternativeGPS();
+                    }
+                },
+                (error) => {
+                    if (error.code === error.TIMEOUT) {
+                        locationStatus.textContent = 'High accuracy timeout, trying standard GPS...';
+                        tryStandardGPS();
+                    } else {
+                        showError(error);
+                    }
+                },
+                {
+                    enableHighAccuracy: true,
+                    timeout: 30000, // 30 seconds for better GPS lock
+                    maximumAge: 0
+                }
+            );
+        }
+
+        function tryAlternativeGPS() {
+            // Method 2: Standard accuracy with shorter timeout
+            navigator.geolocation.getCurrentPosition(
+                (position) => {
+                    if (position.coords.accuracy <= 100) {
+                        showPosition(position);
+                    } else {
+                        // If still not accurate enough, try method 3
+                        locationStatus.textContent = 'Still improving accuracy...';
+                        tryNetworkLocation();
+                    }
+                },
+                (error) => {
+                    showError(error);
+                },
+                {
+                    enableHighAccuracy: false,
+                    timeout: 15000,
+                    maximumAge: 60000 // Allow 1 minute old data
+                }
+            );
+        }
+
+        function tryStandardGPS() {
+            // Method 3: Network-based location
+            navigator.geolocation.getCurrentPosition(
+                showPosition,
+                showError,
+                {
+                    enableHighAccuracy: false,
+                    timeout: 10000,
+                    maximumAge: 300000 // Allow 5 minutes old data
+                }
+            );
+        }
+
+        function tryNetworkLocation() {
+            // Method 4: Network-based with longer timeout
+            navigator.geolocation.getCurrentPosition(
+                showPosition,
+                showError,
+                {
+                    enableHighAccuracy: false,
+                    timeout: 20000,
+                    maximumAge: 600000 // Allow 10 minutes old data
+                }
+            );
+        }
+
+        function showPosition(position) {
+            const latitude = position.coords.latitude;
+            const longitude = position.coords.longitude;
+            const accuracy = Math.round(position.coords.accuracy);
+            const altitude = position.coords.altitude;
+            const heading = position.coords.heading;
+            const speed = position.coords.speed;
+
+            // Update location display
+            document.getElementById('latitude').textContent = latitude.toFixed(8);
+            document.getElementById('longitude').textContent = longitude.toFixed(8);
+            
+            // Show accuracy with more detail and target 50m
+            let accuracyText = accuracy + ' meters';
+            if (accuracy <= 5) {
+                accuracyText += ' (Excellent - < 5m)';
+            } else if (accuracy <= 15) {
+                accuracyText += ' (Very High - < 15m)';
+            } else if (accuracy <= 30) {
+                accuracyText += ' (High - < 30m)';
+            } else if (accuracy <= 50) {
+                accuracyText += ' (Good - < 50m)';
+            } else if (accuracy <= 100) {
+                accuracyText += ' (Fair - < 100m)';
+            } else {
+                accuracyText += ' (Low - > 100m)';
+            }
+            document.getElementById('accuracy').textContent = accuracyText;
+
+            // Get city and country using reverse geocoding
+            getCityAndCountry(latitude, longitude);
+
+            locationInfo.style.display = 'block';
+            locationStatus.textContent = `Location updated successfully! Accuracy: ${accuracy}m`;
+            locationBtn.disabled = false;
+            locationBtn.textContent = 'Update Location';
+        }
+
+        function getCityAndCountry(latitude, longitude) {
+            // Using a free reverse geocoding service with better parameters
+            fetch(`https://nominatim.openstreetmap.org/reverse?format=json&lat=${latitude}&lon=${longitude}&zoom=18&accept-language=en&addressdetails=1`)
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    if (data.address) {
+                        const city = data.address.city || data.address.town || data.address.village || data.address.county || data.address.state || 'Unknown';
+                        const country = data.address.country || 'Unknown';
+                        const street = data.address.road || '';
+                        const houseNumber = data.address.house_number || '';
+                        
+                        document.getElementById('city').textContent = city;
+                        document.getElementById('country').textContent = country;
+                        
+                        // Add more detailed location info if available
+                        if (street && houseNumber) {
+                            document.getElementById('city').textContent = `${houseNumber} ${street}, ${city}`;
+                        }
+                    } else {
+                        document.getElementById('city').textContent = 'Unknown';
+                        document.getElementById('country').textContent = 'Unknown';
+                    }
+                })
+                .catch(error => {
+                    console.log('Error getting city/country:', error);
+                    document.getElementById('city').textContent = 'Unknown';
+                    document.getElementById('country').textContent = 'Unknown';
+                    locationError.textContent = 'Could not get detailed location information.';
+                });
+        }
+
+        function showError(error) {
+            let errorMessage = '';
+            
+            switch(error.code) {
+                case error.PERMISSION_DENIED:
+                    errorMessage = 'Location access denied. Please allow location access in your browser settings and try again.';
+                    break;
+                case error.POSITION_UNAVAILABLE:
+                    errorMessage = 'Location information is unavailable. Please check your internet connection and try again.';
+                    break;
+                case error.TIMEOUT:
+                    errorMessage = 'Location request timed out. Please try again in a few seconds.';
+                    break;
+                case error.UNKNOWN_ERROR:
+                    errorMessage = 'An unknown error occurred while getting location. Please try again.';
+                    break;
+                default:
+                    errorMessage = error.message || 'An error occurred while getting location. Please try again.';
+            }
+
+            locationError.textContent = errorMessage;
+            locationStatus.textContent = '';
+            locationBtn.disabled = false;
+            locationBtn.textContent = 'Get Location';
+        }
+
+        // Navigation functionality
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', function() {
+                // Remove active class from all items
+                document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+                // Add active class to clicked item
+                this.classList.add('active');
+            });
+        });
+
+        // Add hover effects to prayer cards
+        document.querySelectorAll('.prayer-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 150);
+            });
+        });
+
+        // Add hover effects to product cards
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', function() {
+                this.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    this.style.transform = 'translateY(-5px)';
+                }, 150);
+            });
+        });
+
+        // Quran functionality
+        const quranChapters = document.getElementById('quran-chapters');
+        const quranVerses = document.getElementById('quran-verses');
+        const quranSearch = document.getElementById('quran-search');
+        const prevVerseBtn = document.getElementById('prev-verse');
+        const nextVerseBtn = document.getElementById('next-verse');
+
+        // Quran chapters data
+        const quranData = {
+            1: {
+                name: 'Al-Fatiha',
+                arabic: 'الفاتحة',
+                verses: [
+                    {
+                        number: 1,
+                        arabic: 'بِسْمِ اللَّهِ الرَّحْمَٰنِ الرَّحِيمِ',
+                        translation: 'In the name of Allah, the Entirely Merciful, the Especially Merciful.'
+                    },
+                    {
+                        number: 2,
+                        arabic: 'الْحَمْدُ لِلَّهِ رَبِّ الْعَالَمِينَ',
+                        translation: '[All] praise is [due] to Allah, Lord of the worlds.'
+                    },
+                    {
+                        number: 3,
+                        arabic: 'الرَّحْمَٰنِ الرَّحِيمِ',
+                        translation: 'The Entirely Merciful, the Especially Merciful.'
+                    },
+                    {
+                        number: 4,
+                        arabic: 'مَالِكِ يَوْمِ الدِّينِ',
+                        translation: 'Sovereign of the Day of Recompense.'
+                    },
+                    {
+                        number: 5,
+                        arabic: 'إِيَّاكَ نَعْبُدُ وَإِيَّاكَ نَسْتَعِينُ',
+                        translation: 'It is You we worship and You we ask for help.'
+                    },
+                    {
+                        number: 6,
+                        arabic: 'اهْدِنَا الصِّرَاطَ الْمُسْتَقِيمَ',
+                        translation: 'Guide us to the straight path.'
+                    },
+                    {
+                        number: 7,
+                        arabic: 'صِرَاطَ الَّذِينَ أَنْعَمْتَ عَلَيْهِمْ غَيْرِ الْمَغْضُوبِ عَلَيْهِمْ وَلَا الضَّالِّينَ',
+                        translation: 'The path of those upon whom You have bestowed favor, not of those who have evoked [Your] anger or of those who are astray.'
+                    }
+                ]
+            },
+            112: {
+                name: 'Al-Ikhlas',
+                arabic: 'الإخلاص',
+                verses: [
+                    {
+                        number: 1,
+                        arabic: 'قُلْ هُوَ اللَّهُ أَحَدٌ',
+                        translation: 'Say, "He is Allah, [who is] One.'
+                    },
+                    {
+                        number: 2,
+                        arabic: 'اللَّهُ الصَّمَدُ',
+                        translation: 'Allah, the Eternal Refuge.'
+                    },
+                    {
+                        number: 3,
+                        arabic: 'لَمْ يَلِدْ وَلَمْ يُولَدْ',
+                        translation: 'He neither begets nor is born.'
+                    },
+                    {
+                        number: 4,
+                        arabic: 'وَلَمْ يَكُن لَّهُ كُفُوًا أَحَدٌ',
+                        translation: 'Nor is there to Him any equivalent."'
+                    }
+                ]
+            }
+        };
+
+        let currentChapter = 1;
+        let currentVerse = 0;
+
+        // Chapter click handler
+        document.querySelectorAll('.quran-chapter').forEach(chapter => {
+            chapter.addEventListener('click', function() {
+                const chapterNum = parseInt(this.getAttribute('data-chapter'));
+                loadChapter(chapterNum);
+            });
+        });
+
+        // Search functionality
+        quranSearch.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            document.querySelectorAll('.quran-chapter').forEach(chapter => {
+                const chapterName = chapter.querySelector('.chapter-name').textContent.toLowerCase();
+                const chapterArabic = chapter.querySelector('.chapter-arabic').textContent;
+                
+                if (chapterName.includes(searchTerm) || chapterArabic.includes(searchTerm)) {
+                    chapter.style.display = 'block';
+                } else {
+                    chapter.style.display = 'none';
+                }
+            });
+        });
+
+        // Load chapter
+        function loadChapter(chapterNum) {
+            const chapter = quranData[chapterNum];
+            if (!chapter) return;
+
+            currentChapter = chapterNum;
+            currentVerse = 0;
+
+            // Hide chapters, show verses
+            quranChapters.style.display = 'none';
+            quranVerses.style.display = 'block';
+
+            // Update verses content
+            const versesContainer = quranVerses.querySelector('.quran-verse').parentNode;
+            versesContainer.innerHTML = '';
+
+            chapter.verses.forEach((verse, index) => {
+                const verseElement = document.createElement('div');
+                verseElement.className = 'quran-verse';
+                verseElement.innerHTML = `
+                    <div class="verse-header">
+                        <div class="verse-info">Surah ${chapter.name} - Verse ${verse.number}</div>
+                        <div class="verse-actions">
+                            <button class="verse-btn" onclick="playAudio(${chapterNum}, ${verse.number})">🔊 Audio</button>
+                            <button class="verse-btn" onclick="bookmarkVerse(${chapterNum}, ${verse.number})">❤️ Bookmark</button>
+                        </div>
+                    </div>
+                    <div class="verse-arabic">${verse.arabic}</div>
+                    <div class="verse-translation">${verse.translation}</div>
+                `;
+                versesContainer.appendChild(verseElement);
+            });
+
+            // Add navigation buttons
+            const navElement = document.createElement('div');
+            navElement.className = 'quran-nav';
+            navElement.innerHTML = `
+                <button class="quran-nav-btn" onclick="showChapters()">← Back to Chapters</button>
+                <button class="quran-nav-btn" onclick="prevVerse()">← Previous</button>
+                <button class="quran-nav-btn" onclick="nextVerse()">Next →</button>
+            `;
+            versesContainer.appendChild(navElement);
+        }
+
+        // Navigation functions
+        function showChapters() {
+            quranChapters.style.display = 'grid';
+            quranVerses.style.display = 'none';
+        }
+
+        function prevVerse() {
+            if (currentVerse > 0) {
+                currentVerse--;
+                // Scroll to verse
+                const verses = document.querySelectorAll('.quran-verse');
+                if (verses[currentVerse]) {
+                    verses[currentVerse].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        function nextVerse() {
+            const chapter = quranData[currentChapter];
+            if (currentVerse < chapter.verses.length - 1) {
+                currentVerse++;
+                // Scroll to verse
+                const verses = document.querySelectorAll('.quran-verse');
+                if (verses[currentVerse]) {
+                    verses[currentVerse].scrollIntoView({ behavior: 'smooth' });
+                }
+            }
+        }
+
+        // Audio and bookmark functions
+        function playAudio(chapter, verse) {
+            // Placeholder for audio functionality
+            alert(`Playing audio for Surah ${chapter}, Verse ${verse}`);
+        }
+
+        function bookmarkVerse(chapter, verse) {
+            // Placeholder for bookmark functionality
+            alert(`Bookmarked Surah ${chapter}, Verse ${verse}`);
+        }
+    </script>
+</body>
+</html> 

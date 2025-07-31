@@ -598,6 +598,201 @@
                 font-size: 24px;
             }
         }
+
+        /* Mosque Finder Section */
+        .mosque-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 20px;
+            padding: 20px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mosque-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+
+        .mosque-title {
+            color: white;
+            font-size: 20px;
+            font-weight: bold;
+        }
+
+        .mosque-btn {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mosque-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .mosque-btn:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .mosque-map-container {
+            position: relative;
+            height: 300px;
+            border-radius: 15px;
+            overflow: hidden;
+            margin-bottom: 20px;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .mosque-map {
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #2c3e50, #34495e);
+        }
+
+        .mosque-map-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.7);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .mosque-map-title {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            color: #FFD700;
+        }
+
+        .mosque-map-description {
+            font-size: 14px;
+            opacity: 0.9;
+        }
+
+        .mosque-list {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 15px;
+            margin-bottom: 15px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .mosque-list-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .mosque-list-title {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .mosque-list-count {
+            color: #FFD700;
+            font-size: 14px;
+        }
+
+        .mosque-items {
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .mosque-item {
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .mosque-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .mosque-item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 8px;
+        }
+
+        .mosque-name {
+            color: white;
+            font-size: 16px;
+            font-weight: bold;
+        }
+
+        .mosque-distance {
+            color: #FFD700;
+            font-size: 14px;
+        }
+
+        .mosque-details {
+            color: rgba(255, 255, 255, 0.8);
+            font-size: 13px;
+            line-height: 1.4;
+        }
+
+        .mosque-actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+
+        .mosque-action-btn {
+            background: rgba(255, 215, 0, 0.2);
+            border: 1px solid rgba(255, 215, 0, 0.3);
+            border-radius: 15px;
+            padding: 5px 12px;
+            color: #FFD700;
+            font-size: 12px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .mosque-action-btn:hover {
+            background: rgba(255, 215, 0, 0.3);
+        }
+
+        .mosque-help {
+            background: rgba(255, 215, 0, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            border: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .mosque-help-title {
+            color: #FFD700;
+            font-size: 14px;
+            font-weight: bold;
+            margin-bottom: 8px;
+        }
+
+        .mosque-help-text {
+            color: white;
+            font-size: 12px;
+            opacity: 0.9;
+            line-height: 1.5;
+        }
     </style>
 </head>
 <body>
@@ -875,6 +1070,44 @@
                 <div class="product-card">
                     <div class="product-icon">🕯️</div>
                     <div class="product-name">Incense</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mosque Finder Section -->
+        <div class="mosque-section">
+            <div class="mosque-header">
+                <div class="mosque-title">🕌 Find Nearby Mosques</div>
+                <button class="mosque-btn" id="find-mosques-btn">🔍 Find Mosques</button>
+            </div>
+            
+            <div class="mosque-map-container">
+                <div id="mosque-map" class="mosque-map"></div>
+                <div class="mosque-map-overlay">
+                    <div class="mosque-map-info">
+                        <div class="mosque-map-title">Mosque Finder</div>
+                        <div class="mosque-map-description">Click "Find Mosques" to discover nearby Islamic centers and mosques</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="mosque-list" id="mosque-list">
+                <div class="mosque-list-header">
+                    <div class="mosque-list-title">Nearby Mosques</div>
+                    <div class="mosque-list-count" id="mosque-count">0 found</div>
+                </div>
+                <div class="mosque-items" id="mosque-items">
+                    <!-- Mosque items will be added here -->
+                </div>
+            </div>
+            
+            <div class="mosque-help">
+                <div class="mosque-help-title">💡 Mosque Finder Help</div>
+                <div class="mosque-help-text">
+                    • Click "Find Mosques" to search for nearby Islamic centers<br>
+                    • Results show mosques within 5km of your location<br>
+                    • Each mosque shows distance, rating, and contact info<br>
+                    • Use the map to see exact locations and directions
                 </div>
             </div>
         </div>
@@ -1337,6 +1570,126 @@
             // Placeholder for bookmark functionality
             alert(`Bookmarked Surah ${chapter}, Verse ${verse}`);
         }
+
+        // Mosque Finder functionality
+        const findMosquesBtn = document.getElementById('find-mosques-btn');
+        const mosqueMap = document.getElementById('mosque-map');
+        const mosqueList = document.getElementById('mosque-list');
+        const mosqueItems = document.getElementById('mosque-items');
+        const mosqueCount = document.getElementById('mosque-count');
+        const mosqueMapOverlay = document.querySelector('.mosque-map-overlay');
+
+        // Sample mosque data (in real app, this would come from API)
+        const sampleMosques = [
+            {
+                name: "Central Mosque",
+                distance: "0.5 km",
+                address: "123 Main Street, Downtown",
+                phone: "+1-555-0123",
+                rating: "4.8",
+                prayerTimes: "Fajr: 5:30 AM, Dhuhr: 1:15 PM"
+            },
+            {
+                name: "Islamic Center",
+                distance: "1.2 km",
+                address: "456 Oak Avenue, Westside",
+                phone: "+1-555-0456",
+                rating: "4.6",
+                prayerTimes: "Fajr: 5:25 AM, Dhuhr: 1:10 PM"
+            },
+            {
+                name: "Masjid Al-Noor",
+                distance: "2.1 km",
+                address: "789 Pine Street, Eastside",
+                phone: "+1-555-0789",
+                rating: "4.9",
+                prayerTimes: "Fajr: 5:35 AM, Dhuhr: 1:20 PM"
+            },
+            {
+                name: "Community Mosque",
+                distance: "3.5 km",
+                address: "321 Elm Road, Northside",
+                phone: "+1-555-0321",
+                rating: "4.7",
+                prayerTimes: "Fajr: 5:28 AM, Dhuhr: 1:12 PM"
+            },
+            {
+                name: "Islamic Society",
+                distance: "4.2 km",
+                address: "654 Maple Drive, Southside",
+                phone: "+1-555-0654",
+                rating: "4.5",
+                prayerTimes: "Fajr: 5:32 AM, Dhuhr: 1:18 PM"
+            }
+        ];
+
+        findMosquesBtn.addEventListener('click', function() {
+            // Disable button and show loading
+            findMosquesBtn.disabled = true;
+            findMosquesBtn.textContent = '🔍 Searching...';
+            
+            // Hide overlay and show map
+            mosqueMapOverlay.style.display = 'none';
+            mosqueMap.style.background = 'linear-gradient(135deg, #2c3e50, #34495e)';
+            
+            // Simulate API call delay
+            setTimeout(() => {
+                displayMosques(sampleMosques);
+                findMosquesBtn.disabled = false;
+                findMosquesBtn.textContent = '🔍 Find Mosques';
+            }, 2000);
+        });
+
+        function displayMosques(mosques) {
+            mosqueItems.innerHTML = '';
+            mosqueCount.textContent = `${mosques.length} found`;
+            
+            mosques.forEach((mosque, index) => {
+                const mosqueElement = document.createElement('div');
+                mosqueElement.className = 'mosque-item';
+                mosqueElement.innerHTML = `
+                    <div class="mosque-item-header">
+                        <div class="mosque-name">${mosque.name}</div>
+                        <div class="mosque-distance">${mosque.distance}</div>
+                    </div>
+                    <div class="mosque-details">
+                        <div>📍 ${mosque.address}</div>
+                        <div>📞 ${mosque.phone}</div>
+                        <div>⭐ ${mosque.rating}/5.0</div>
+                        <div>🕌 ${mosque.prayerTimes}</div>
+                    </div>
+                    <div class="mosque-actions">
+                        <button class="mosque-action-btn" onclick="getDirections(${index})">🗺️ Directions</button>
+                        <button class="mosque-action-btn" onclick="callMosque('${mosque.phone}')">📞 Call</button>
+                        <button class="mosque-action-btn" onclick="saveMosque(${index})">❤️ Save</button>
+                    </div>
+                `;
+                mosqueItems.appendChild(mosqueElement);
+            });
+            
+            // Show mosque list
+            mosqueList.style.display = 'block';
+        }
+
+        function getDirections(mosqueIndex) {
+            const mosque = sampleMosques[mosqueIndex];
+            alert(`Getting directions to ${mosque.name} (${mosque.address})`);
+            // In real app, this would open Google Maps or navigation app
+        }
+
+        function callMosque(phone) {
+            alert(`Calling ${phone}`);
+            // In real app, this would initiate a phone call
+        }
+
+        function saveMosque(mosqueIndex) {
+            const mosque = sampleMosques[mosqueIndex];
+            alert(`Saved ${mosque.name} to your favorites`);
+            // In real app, this would save to local storage
+        }
+
+        // Initialize mosque finder
+        mosqueList.style.display = 'none';
     </script>
 </body>
 </html> 

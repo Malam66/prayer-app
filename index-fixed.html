@@ -159,8 +159,92 @@
             animation: pulse 2s infinite;
         }
 
-        /* Prayer Times Section */
-        .prayer-grid {
+        /* Real-time Prayer Times Styles */
+        .real-time-prayer-times {
+            margin-top: 20px;
+            padding: 15px;
+            background: linear-gradient(135deg, #1a1a2e, #16213e);
+            border-radius: 15px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+        }
+
+        .real-time-prayer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid rgba(255, 215, 0, 0.3);
+        }
+
+        .real-time-prayer-title {
+            font-size: 16px;
+            font-weight: bold;
+            color: #FFD700;
+        }
+
+        .real-time-live-indicator {
+            font-size: 12px;
+            color: #00ff00;
+            animation: pulse 2s infinite;
+        }
+
+        #real-time-prayer-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 8px;
+        }
+
+        .real-time-prayer-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 215, 0, 0.2);
+            border-radius: 8px;
+            padding: 8px;
+            text-align: center;
+            transition: all 0.3s ease;
+            font-size: 12px;
+        }
+
+        .real-time-prayer-card:hover {
+            background: rgba(255, 215, 0, 0.1);
+            border-color: #FFD700;
+            transform: translateY(-2px);
+        }
+
+        .real-time-prayer-card.next {
+            background: rgba(255, 215, 0, 0.2);
+            border-color: #FFD700;
+            box-shadow: 0 0 10px rgba(255, 215, 0, 0.5);
+        }
+
+        .real-time-prayer-card.current {
+            background: rgba(0, 255, 0, 0.2);
+            border-color: #00ff00;
+            box-shadow: 0 0 10px rgba(0, 255, 0, 0.5);
+        }
+
+        .real-time-prayer-name {
+            font-weight: bold;
+            color: #FFD700;
+            font-size: 11px;
+            margin-bottom: 4px;
+        }
+
+        .real-time-prayer-time {
+            color: #ffffff;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+        .real-time-prayer-status {
+            font-size: 10px;
+            margin-top: 4px;
+            opacity: 0.8;
+        }
+
+        /* Prayer Times Styles */
+        .prayer-times-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
             gap: 15px;
@@ -168,53 +252,85 @@
         }
 
         .prayer-card {
-            background: rgba(255, 255, 255, 0.2);
+            background: rgba(255, 255, 255, 0.15);
             border-radius: 15px;
-            padding: 15px;
+            padding: 20px;
             text-align: center;
             transition: all 0.3s ease;
             border: 1px solid rgba(255, 255, 255, 0.3);
-            cursor: pointer;
+            position: relative;
         }
 
         .prayer-card:hover {
+            transform: translateY(-3px);
+            background: rgba(255, 255, 255, 0.25);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+
+        .prayer-card.next {
+            background: linear-gradient(135deg, #FFD700, #FFA500);
+            border: 2px solid #FFD700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+        }
+
+        .prayer-card.next:hover {
             transform: translateY(-5px);
-            background: rgba(255, 255, 255, 0.3);
+            box-shadow: 0 8px 25px rgba(255, 215, 0, 0.6);
+        }
+
+        .prayer-card.current {
+            background: linear-gradient(135deg, #4CAF50, #45a049);
+            border: 2px solid #4CAF50;
+            box-shadow: 0 0 20px rgba(76, 175, 80, 0.5);
+        }
+
+        .prayer-card.current:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(76, 175, 80, 0.6);
         }
 
         .prayer-name {
-            color: #FFD700;
-            font-weight: bold;
-            font-size: 16px;
-            margin-bottom: 5px;
-        }
-
-        .prayer-time {
             color: white;
             font-size: 18px;
             font-weight: bold;
+            margin-bottom: 10px;
         }
 
-        .prayer-status {
-            background: rgba(255, 255, 255, 0.1);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 15px;
-            text-align: center;
-        }
-
-        .prayer-status-text {
+        .prayer-time {
             color: #FFD700;
+            font-size: 24px;
             font-weight: bold;
-            font-size: 14px;
             margin-bottom: 5px;
         }
 
-        .prayer-location {
-            color: white;
+        .prayer-status {
             font-size: 12px;
-            opacity: 0.8;
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 5px;
         }
+
+        .prayer-icon {
+            font-size: 20px;
+            margin-bottom: 10px;
+        }
+
+        .next-indicator {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background: #FFD700;
+            color: #000;
+            border-radius: 50%;
+            width: 25px;
+            height: 25px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            font-weight: bold;
+        }
+
+
 
         .section {
             background: rgba(255, 255, 255, 0.1);
@@ -246,6 +362,19 @@
             align-items: center;
             justify-content: space-between;
             margin-bottom: 15px;
+        }
+
+        .location-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        #manual-location-input input {
+            color: white !important;
+        }
+
+        #manual-location-input input::placeholder {
+            color: rgba(255, 255, 255, 0.6) !important;
         }
 
         .location-title {
@@ -768,51 +897,70 @@
 
 
 
-        <!-- Live Time Section -->
+        <!-- Real-time Section -->
         <div class="section">
-            <div class="section-title">🕐 Current Time (LIVE)</div>
+            <div class="section-title">🕐 Real-time</div>
+            
+            <!-- Current Time -->
             <div class="current-time">
                 <div class="time-value" id="current-time">--:--:--</div>
                 <div class="live-indicator">● LIVE</div>
             </div>
+            
+            <!-- Prayer Times in Real-time -->
+            <div class="real-time-prayer-times">
+                <div class="real-time-prayer-header">
+                    <span class="real-time-prayer-title">🕌 Prayer Times</span>
+                    <span class="real-time-live-indicator">● LIVE</span>
+                </div>
+                <div id="real-time-prayer-loading" style="text-align: center; color: #FFD700; padding: 10px; font-size: 14px;">
+                    📍 Getting location for prayer times...
+                </div>
+                <div id="real-time-prayer-content" style="display: none;">
+                    <div id="real-time-prayer-location" style="text-align: center; margin-bottom: 10px; color: #FFD700; font-size: 12px; font-weight: bold;"></div>
+                    <div id="real-time-prayer-grid" style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px;"></div>
+                </div>
+            </div>
         </div>
 
         <!-- Prayer Times Section -->
-        <div class="section">
+        <div class="section" id="prayer-times-section">
             <div class="section-title">🕌 Prayer Times</div>
-            <div class="prayer-grid">
-                <div class="prayer-card">
-                    <div class="prayer-name">Fajr</div>
-                    <div class="prayer-time" id="fajr-time">--:--</div>
-                </div>
-                <div class="prayer-card">
-                    <div class="prayer-name">Dhuhr</div>
-                    <div class="prayer-time" id="dhuhr-time">--:--</div>
-                </div>
-                <div class="prayer-card">
-                    <div class="prayer-name">Asr</div>
-                    <div class="prayer-time" id="asr-time">--:--</div>
-                </div>
-                <div class="prayer-card">
-                    <div class="prayer-name">Maghrib</div>
-                    <div class="prayer-time" id="maghrib-time">--:--</div>
-                </div>
-                <div class="prayer-card">
-                    <div class="prayer-name">Isha</div>
-                    <div class="prayer-time" id="isha-time">--:--</div>
-                </div>
+            <div id="prayer-times-loading" style="text-align: center; color: #FFD700; padding: 20px;">
+                📍 Getting your location for accurate prayer times...
             </div>
-            <div class="prayer-status" id="prayer-status" style="display: none;">
-                <div class="prayer-status-text" id="prayer-status-text"></div>
-                <div class="prayer-location" id="prayer-location"></div>
+            <div id="prayer-times-content" style="display: none;">
+                <div id="prayer-location-info" style="text-align: center; margin-bottom: 20px; color: #FFD700; font-weight: bold;"></div>
+                <div id="prayer-times-grid"></div>
+                <div style="text-align: center; margin-top: 20px;">
+                    <button class="location-button" id="refresh-prayer-times-btn" style="display: none;">🔄 Refresh Prayer Times</button>
+                </div>
             </div>
         </div>
+
+
 
         <!-- Location Section -->
         <div class="section">
             <div class="location-header">
                 <div class="location-title">📍 Live Location</div>
-                <button class="location-button" id="get-location-btn">Get Location</button>
+                <div class="location-buttons">
+                    <button class="location-button" id="get-location-btn">Get Location</button>
+                    <button class="location-button" id="manual-location-btn" style="margin-left: 10px;">Manual Location</button>
+                </div>
+            </div>
+            
+            <!-- Manual Location Input -->
+            <div id="manual-location-input" style="display: none; margin: 15px 0; padding: 15px; background: rgba(255, 255, 255, 0.05); border-radius: 10px;">
+                <div style="margin-bottom: 10px; color: #FFD700; font-weight: bold;">Enter Location Coordinates:</div>
+                <div style="display: flex; gap: 10px; margin-bottom: 10px;">
+                    <input type="number" id="manual-lat" placeholder="Latitude" step="0.000001" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #FFD700; background: rgba(255, 255, 255, 0.1); color: white;">
+                    <input type="number" id="manual-lon" placeholder="Longitude" step="0.000001" style="flex: 1; padding: 8px; border-radius: 5px; border: 1px solid #FFD700; background: rgba(255, 255, 255, 0.1); color: white;">
+                </div>
+                <div style="display: flex; gap: 10px;">
+                    <button class="location-button" id="apply-manual-location" style="flex: 1;">Apply Location</button>
+                    <button class="location-button" id="cancel-manual-location" style="flex: 1; background: rgba(255, 0, 0, 0.3);">Cancel</button>
+                </div>
             </div>
             
             <div class="location-info" id="location-info" style="display: none;">
@@ -1117,17 +1265,17 @@
 
         // Start time display when page loads
         if (document.readyState === 'loading') {
-            document.addEventListener('DOMContentLoaded', function() {
-                initializeTime();
-                initializePrayerTimes();
-            });
+            document.addEventListener('DOMContentLoaded', initializeTime);
         } else {
             initializeTime();
-            initializePrayerTimes();
         }
+
+
 
         // Global variables
         let userLocation = null;
+        let prayerTimesData = null;
+        let currentPrayerIndex = -1;
 
         // Location functionality
         const locationBtn = document.getElementById('get-location-btn');
@@ -1135,21 +1283,447 @@
         const locationStatus = document.getElementById('locationStatus');
         const locationError = document.getElementById('location-error');
 
+        // Prayer Times Functions with Auto Location Detection
+        function getPrayerTimesForLocation(latitude, longitude) {
+            // Get current date and season
+            const now = new Date();
+            const month = now.getMonth() + 1;
+            
+            // Base prayer times adjusted for location
+            let baseTimes;
+            
+            if (month >= 3 && month <= 5) {
+                // Spring (March to May)
+                baseTimes = {
+                    Fajr: '04:30',
+                    Sunrise: '06:15',
+                    Dhuhr: '12:30',
+                    Asr: '16:45',
+                    Maghrib: '20:30',
+                    Isha: '22:15'
+                };
+            } else if (month >= 6 && month <= 8) {
+                // Summer (June to August)
+                baseTimes = {
+                    Fajr: '03:45',
+                    Sunrise: '05:30',
+                    Dhuhr: '12:30',
+                    Asr: '17:15',
+                    Maghrib: '21:00',
+                    Isha: '22:45'
+                };
+            } else if (month >= 9 && month <= 11) {
+                // Fall (September to November)
+                baseTimes = {
+                    Fajr: '05:15',
+                    Sunrise: '07:00',
+                    Dhuhr: '12:30',
+                    Asr: '15:45',
+                    Maghrib: '19:30',
+                    Isha: '21:15'
+                };
+            } else {
+                // Winter (December to February)
+                baseTimes = {
+                    Fajr: '06:30',
+                    Sunrise: '08:15',
+                    Dhuhr: '12:30',
+                    Asr: '14:15',
+                    Maghrib: '16:30',
+                    Isha: '18:15'
+                };
+            }
+            
+            // Adjust times based on longitude (timezone)
+            const timezoneOffset = Math.round(longitude / 15);
+            const baseOffset = 1; // Germany is UTC+1
+            const adjustment = (timezoneOffset - baseOffset) * 60; // minutes
+            
+            if (Math.abs(adjustment) > 15) {
+                console.log('Adjusting times by', adjustment, 'minutes for longitude', longitude);
+                
+                const adjustedTimes = {};
+                for (let prayer in baseTimes) {
+                    const [hours, minutes] = baseTimes[prayer].split(':');
+                    let newMinutes = parseInt(minutes) + adjustment;
+                    let newHours = parseInt(hours);
+                    
+                    // Handle hour overflow/underflow
+                    while (newMinutes >= 60) {
+                        newMinutes -= 60;
+                        newHours += 1;
+                    }
+                    while (newMinutes < 0) {
+                        newMinutes += 60;
+                        newHours -= 1;
+                    }
+                    
+                    // Handle day overflow/underflow
+                    if (newHours >= 24) newHours -= 24;
+                    if (newHours < 0) newHours += 24;
+                    
+                    adjustedTimes[prayer] = `${newHours.toString().padStart(2, '0')}:${newMinutes.toString().padStart(2, '0')}`;
+                }
+                
+                baseTimes = adjustedTimes;
+            }
+            
+            // Additional latitude-based adjustments for extreme latitudes
+            if (Math.abs(latitude) > 50) {
+                console.log('Applying latitude adjustment for', latitude);
+                if (baseTimes.Fajr) {
+                    const [hours, minutes] = baseTimes.Fajr.split(':');
+                    let newHours = parseInt(hours);
+                    if (latitude > 50) {
+                        newHours += 1; // Later Fajr for higher latitudes
+                    }
+                    if (newHours >= 24) newHours -= 24;
+                    baseTimes.Fajr = `${newHours.toString().padStart(2, '0')}:${minutes}`;
+                }
+            }
+            
+            console.log('Prayer times for location', latitude, longitude, ':', baseTimes);
+            return baseTimes;
+        }
+
+        async function loadPrayerTimes() {
+            console.log('Loading prayer times with auto location detection...');
+            
+            const prayerTimesLoading = document.getElementById('prayer-times-loading');
+            const prayerTimesContent = document.getElementById('prayer-times-content');
+            const prayerLocationInfo = document.getElementById('prayer-location-info');
+            const prayerTimesGrid = document.getElementById('prayer-times-grid');
+            const refreshBtn = document.getElementById('refresh-prayer-times-btn');
+
+            if (!prayerTimesLoading || !prayerTimesContent || !prayerLocationInfo || !prayerTimesGrid) {
+                console.error('Required prayer times elements not found');
+                return;
+            }
+
+            // Show loading state
+            prayerTimesLoading.style.display = 'block';
+            prayerTimesContent.style.display = 'none';
+            prayerTimesLoading.innerHTML = '🔄 Getting your location for accurate prayer times...';
+
+            try {
+                // Get location automatically
+                const position = await getCurrentPosition();
+                const { latitude, longitude } = position.coords;
+                
+                // Get prayer times for detected location
+                prayerTimesData = getPrayerTimesForLocation(latitude, longitude);
+                
+                // Get location name
+                const locationName = await getLocationName(latitude, longitude);
+                prayerLocationInfo.textContent = locationName;
+                
+                // Display the prayer times
+                displayPrayerTimes();
+                updateNextPrayer();
+                
+                // Show content and hide loading
+                prayerTimesContent.style.display = 'block';
+                prayerTimesLoading.style.display = 'none';
+                if (refreshBtn) refreshBtn.style.display = 'inline-block';
+                
+                console.log('Prayer times loaded for location:', latitude, longitude);
+                
+            } catch (error) {
+                console.error('Error loading prayer times:', error);
+                prayerTimesLoading.innerHTML = '❌ Error getting location. Please allow location access and refresh.';
+                prayerTimesLoading.style.display = 'block';
+                prayerTimesContent.style.display = 'none';
+            }
+        }
+
+        function getCurrentPosition() {
+            return new Promise((resolve, reject) => {
+                if (!navigator.geolocation) {
+                    reject(new Error('Geolocation not supported'));
+                    return;
+                }
+                
+                navigator.geolocation.getCurrentPosition(
+                    resolve,
+                    reject,
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 10000,
+                        maximumAge: 60000
+                    }
+                );
+            });
+        }
+
+        function displayPrayerTimes() {
+            if (!prayerTimesData) {
+                console.log('No prayer times data available');
+                return;
+            }
+
+            const prayerTimesGrid = document.getElementById('prayer-times-grid');
+            if (!prayerTimesGrid) {
+                console.error('Prayer times grid element not found');
+                return;
+            }
+
+            console.log('Displaying prayer times:', prayerTimesData);
+            
+            const prayers = [
+                { name: 'Fajr', key: 'Fajr', icon: '🌅' },
+                { name: 'Sunrise', key: 'Sunrise', icon: '☀️' },
+                { name: 'Dhuhr', key: 'Dhuhr', icon: '🌞' },
+                { name: 'Asr', key: 'Asr', icon: '🌅' },
+                { name: 'Maghrib', key: 'Maghrib', icon: '🌆' },
+                { name: 'Isha', key: 'Isha', icon: '🌙' }
+            ];
+
+            prayerTimesGrid.innerHTML = '';
+
+            prayers.forEach((prayer, index) => {
+                const time = prayerTimesData[prayer.key];
+                console.log(`Prayer ${prayer.name}: ${time}`);
+                
+                if (time) {
+                    const card = document.createElement('div');
+                    card.className = 'prayer-card';
+                    card.innerHTML = `
+                        <div class="prayer-icon">${prayer.icon}</div>
+                        <div class="prayer-name">${prayer.name}</div>
+                        <div class="prayer-time">${formatPrayerTime(time)}</div>
+                        <div class="prayer-status">${getPrayerStatus(time)}</div>
+                    `;
+                    prayerTimesGrid.appendChild(card);
+                } else {
+                    console.log(`No time found for ${prayer.name}`);
+                }
+            });
+        }
+
+        function formatPrayerTime(timeString) {
+            try {
+                const [hours, minutes] = timeString.split(':');
+                const hour = parseInt(hours);
+                const minute = parseInt(minutes);
+                const period = hour >= 12 ? 'PM' : 'AM';
+                const displayHour = hour > 12 ? hour - 12 : hour === 0 ? 12 : hour;
+                return `${displayHour}:${minute.toString().padStart(2, '0')} ${period}`;
+            } catch (error) {
+                return timeString;
+            }
+        }
+
+        function getPrayerStatus(timeString) {
+            try {
+                const [hours, minutes] = timeString.split(':');
+                const prayerTime = new Date();
+                prayerTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                
+                const now = new Date();
+                const timeDiff = prayerTime - now;
+                
+                // Convert to minutes for easier comparison
+                const diffMinutes = timeDiff / (1000 * 60);
+                
+                if (diffMinutes < -60) {
+                    return 'Completed';
+                } else if (diffMinutes < 0) {
+                    return 'Just Completed';
+                } else if (diffMinutes < 10) {
+                    return 'Starting Soon';
+                } else if (diffMinutes < 60) {
+                    return 'Next Hour';
+                } else {
+                    return 'Upcoming';
+                }
+            } catch (error) {
+                return 'Unknown';
+            }
+        }
+
+        function updateNextPrayer() {
+            if (!prayerTimesData) return;
+
+            const prayers = [
+                { name: 'Fajr', key: 'Fajr' },
+                { name: 'Sunrise', key: 'Sunrise' },
+                { name: 'Dhuhr', key: 'Dhuhr' },
+                { name: 'Asr', key: 'Asr' },
+                { name: 'Maghrib', key: 'Maghrib' },
+                { name: 'Isha', key: 'Isha' }
+            ];
+
+            const now = new Date();
+            let nextPrayerIndex = -1;
+            let currentPrayerIndex = -1;
+
+            // Find the current and next prayer
+            for (let i = 0; i < prayers.length; i++) {
+                const time = prayerTimesData[prayers[i].key];
+                if (time) {
+                    const [hours, minutes] = time.split(':');
+                    const prayerTime = new Date();
+                    prayerTime.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+                    
+                    const timeDiff = prayerTime - now;
+                    const diffMinutes = timeDiff / (1000 * 60);
+                    
+                    // If prayer is within the last 30 minutes, it's current
+                    if (diffMinutes >= -30 && diffMinutes <= 30) {
+                        currentPrayerIndex = i;
+                    }
+                    
+                    // If prayer is in the future, it's next
+                    if (diffMinutes > 0 && nextPrayerIndex === -1) {
+                        nextPrayerIndex = i;
+                    }
+                }
+            }
+
+            // If no next prayer today, find first prayer tomorrow
+            if (nextPrayerIndex === -1) {
+                nextPrayerIndex = 0;
+            }
+
+            // Update UI to highlight current/next prayer
+            const prayerCards = document.querySelectorAll('.prayer-card');
+            prayerCards.forEach((card, index) => {
+                card.classList.remove('next', 'current');
+                
+                if (index === currentPrayerIndex) {
+                    card.classList.add('current');
+                    card.innerHTML += '<div class="next-indicator">🕌</div>';
+                } else if (index === nextPrayerIndex) {
+                    card.classList.add('next');
+                    card.innerHTML += '<div class="next-indicator">⏰</div>';
+                }
+            });
+
+            currentPrayerIndex = nextPrayerIndex;
+        }
+
         locationBtn.addEventListener('click', getLocation);
+        
+        // Manual location functionality
+        const manualLocationBtn = document.getElementById('manual-location-btn');
+        const manualLocationInput = document.getElementById('manual-location-input');
+        const applyManualLocationBtn = document.getElementById('apply-manual-location');
+        const cancelManualLocationBtn = document.getElementById('cancel-manual-location');
+        const manualLatInput = document.getElementById('manual-lat');
+        const manualLonInput = document.getElementById('manual-lon');
+        
+        if (manualLocationBtn) {
+            manualLocationBtn.addEventListener('click', () => {
+                manualLocationInput.style.display = 'block';
+                manualLocationBtn.style.display = 'none';
+            });
+        }
+        
+        if (cancelManualLocationBtn) {
+            cancelManualLocationBtn.addEventListener('click', () => {
+                manualLocationInput.style.display = 'none';
+                if (manualLocationBtn) manualLocationBtn.style.display = 'inline-block';
+                if (manualLatInput) manualLatInput.value = '';
+                if (manualLonInput) manualLonInput.value = '';
+            });
+        }
+        
+        if (applyManualLocationBtn) {
+            applyManualLocationBtn.addEventListener('click', () => {
+                const lat = parseFloat(manualLatInput.value);
+                const lon = parseFloat(manualLonInput.value);
+                
+                if (isNaN(lat) || isNaN(lon)) {
+                    alert('Please enter valid latitude and longitude coordinates.');
+                    return;
+                }
+                
+                if (lat < -90 || lat > 90) {
+                    alert('Latitude must be between -90 and 90.');
+                    return;
+                }
+                
+                if (lon < -180 || lon > 180) {
+                    alert('Longitude must be between -180 and 180.');
+                    return;
+                }
+                
+                // Apply manual location
+                applyManualLocation(lat, lon);
+                
+                // Hide manual input
+                manualLocationInput.style.display = 'none';
+                if (manualLocationBtn) manualLocationBtn.style.display = 'inline-block';
+            });
+        }
+        
+        function applyManualLocation(latitude, longitude) {
+            console.log('Applying manual location:', latitude, longitude);
+            
+            // Create a mock position object
+            const mockPosition = {
+                coords: {
+                    latitude: latitude,
+                    longitude: longitude,
+                    accuracy: 1 // Manual location has high accuracy
+                }
+            };
+            
+            // Update user location
+            userLocation = { latitude, longitude, accuracy: 1 };
+            
+            // Show position with manual location
+            showPosition(mockPosition);
+            
+            // Show success message
+            if (locationStatus) {
+                locationStatus.textContent = `📍 Manual location applied! Prayer times updated.`;
+                setTimeout(() => {
+                    locationStatus.textContent = '';
+                }, 3000);
+            }
+        }
 
         function getLocation() {
-            locationBtn.disabled = true;
-            locationBtn.textContent = 'Getting Location...';
-            locationStatus.textContent = 'Getting your location with maximum accuracy...';
-            locationError.textContent = '';
-            locationInfo.style.display = 'none';
-
-            if (navigator.geolocation) {
-                // Try multiple methods for better accuracy
-                tryHighAccuracyGPS();
-            } else {
+            if (!navigator.geolocation) {
                 showError({ code: 0, message: 'Geolocation is not supported by this browser.' });
+                return;
             }
+
+            // Check if we have permission first
+            if (navigator.permissions && navigator.permissions.query) {
+                navigator.permissions.query({ name: 'geolocation' }).then(permissionStatus => {
+                    if (permissionStatus.state === 'denied') {
+                        showError({ 
+                            code: 1, 
+                            message: 'Location access is blocked. Please enable location access in your browser settings and refresh the page.' 
+                        });
+                        return;
+                    }
+                    
+                    // Proceed with location request
+                    startLocationRequest();
+                }).catch(() => {
+                    // Fallback if permissions API is not available
+                    startLocationRequest();
+                });
+            } else {
+                // Fallback for browsers without permissions API
+                startLocationRequest();
+            }
+        }
+
+        function startLocationRequest() {
+            if (locationBtn) {
+                locationBtn.disabled = true;
+                locationBtn.textContent = 'Getting Location...';
+            }
+            if (locationStatus) locationStatus.textContent = '📍 Getting your location with maximum accuracy...';
+            if (locationError) locationError.textContent = '';
+            if (locationInfo) locationInfo.style.display = 'none';
+
+            // Try multiple methods for better accuracy
+            tryHighAccuracyGPS();
         }
 
         function tryHighAccuracyGPS() {
@@ -1229,109 +1803,10 @@
             );
         }
 
-        // Prayer Times Functions
-        async function updatePrayerTimes() {
-            if (!userLocation) {
-                console.log('No user location available for prayer times');
-                return;
-            }
-
-            try {
-                await fetchLivePrayerTimes(userLocation.latitude, userLocation.longitude);
-            } catch (error) {
-                console.log('Error updating prayer times:', error);
-                updatePrayerTimesFallback();
-            }
-        }
-
-        async function fetchLivePrayerTimes(latitude, longitude) {
-            const today = new Date();
-            const date = today.getDate();
-            const month = today.getMonth() + 1;
-            const year = today.getFullYear();
-
-            const url = `https://api.aladhan.com/v1/timings/${date}-${month}-${year}?latitude=${latitude}&longitude=${longitude}&method=2`;
-
-            console.log('Fetching prayer times from:', url);
-
-            const response = await fetch(url);
-            if (!response.ok) {
-                throw new Error('Failed to fetch prayer times');
-            }
-
-            const data = await response.json();
-            console.log('Prayer times API response:', data);
-
-            if (data.data && data.data.timings) {
-                const timings = data.data.timings;
-                
-                // Update prayer times display
-                updatePrayerTimeDisplay('fajr-time', timings.Fajr);
-                updatePrayerTimeDisplay('dhuhr-time', timings.Dhuhr);
-                updatePrayerTimeDisplay('asr-time', timings.Asr);
-                updatePrayerTimeDisplay('maghrib-time', timings.Maghrib);
-                updatePrayerTimeDisplay('isha-time', timings.Isha);
-
-                // Get location name for display
-                const locationName = await getLocationName(latitude, longitude);
-                showPrayerStatus('Prayer times updated successfully!', locationName);
-            } else {
-                throw new Error('Invalid prayer times data');
-            }
-        }
-
-        function updatePrayerTimeDisplay(elementId, timeString) {
-            const element = document.getElementById(elementId);
-            if (element && timeString) {
-                // Convert 12-hour format to 24-hour format
-                const time = new Date(`2000-01-01 ${timeString}`);
-                const hours = time.getHours().toString().padStart(2, '0');
-                const minutes = time.getMinutes().toString().padStart(2, '0');
-                element.textContent = `${hours}:${minutes}`;
-            }
-        }
-
-        function showPrayerStatus(text, location) {
-            const statusElement = document.getElementById('prayer-status');
-            const statusTextElement = document.getElementById('prayer-status-text');
-            const locationElement = document.getElementById('prayer-location');
-
-            if (statusElement && statusTextElement && locationElement) {
-                statusTextElement.textContent = text;
-                locationElement.textContent = location;
-                statusElement.style.display = 'block';
-                
-                // Hide status after 5 seconds
-                setTimeout(() => {
-                    statusElement.style.display = 'none';
-                }, 5000);
-            }
-        }
-
-        function updatePrayerTimesFallback() {
-            // Fallback prayer times (example times)
-            updatePrayerTimeDisplay('fajr-time', '05:30');
-            updatePrayerTimeDisplay('dhuhr-time', '12:30');
-            updatePrayerTimeDisplay('asr-time', '15:45');
-            updatePrayerTimeDisplay('maghrib-time', '18:15');
-            updatePrayerTimeDisplay('isha-time', '19:45');
-            
-            showPrayerStatus('Using fallback prayer times', 'Location not available');
-        }
-
-        function initializePrayerTimes() {
-            console.log('Initializing prayer times...');
-            // Set initial fallback times
-            updatePrayerTimesFallback();
-        }
-
         function showPosition(position) {
             const latitude = position.coords.latitude;
             const longitude = position.coords.longitude;
             const accuracy = Math.round(position.coords.accuracy);
-            const altitude = position.coords.altitude;
-            const heading = position.coords.heading;
-            const speed = position.coords.speed;
 
             // Store user location globally
             userLocation = { latitude, longitude, accuracy };
@@ -1339,8 +1814,12 @@
             console.log('Location obtained:', { latitude, longitude, accuracy });
 
             // Update location display
-            document.getElementById('latitude').textContent = latitude.toFixed(8);
-            document.getElementById('longitude').textContent = longitude.toFixed(8);
+            const latElement = document.getElementById('latitude');
+            const lonElement = document.getElementById('longitude');
+            const accElement = document.getElementById('accuracy');
+            
+            if (latElement) latElement.textContent = latitude.toFixed(8);
+            if (lonElement) lonElement.textContent = longitude.toFixed(8);
             
             // Show accuracy with more detail and target 50m
             let accuracyText = accuracy + ' meters';
@@ -1357,24 +1836,135 @@
             } else {
                 accuracyText += ' (Low - > 100m)';
             }
-            document.getElementById('accuracy').textContent = accuracyText;
+            if (accElement) accElement.textContent = accuracyText;
 
             // Get city and country using reverse geocoding
             getCityAndCountry(latitude, longitude);
 
-            // Get timezone information for the location
-            getLocationTimezone(latitude, longitude);
-
-            // Update prayer times with live location data
-            updatePrayerTimes();
-
-            locationInfo.style.display = 'block';
-            locationStatus.textContent = `Location updated successfully! Accuracy: ${accuracy}m`;
-            locationBtn.disabled = false;
-            locationBtn.textContent = 'Update Location';
+            // Update location status
+            if (locationInfo) locationInfo.style.display = 'block';
+            if (locationStatus) locationStatus.textContent = `📍 Location updated successfully! Accuracy: ${accuracy}m`;
+            if (locationBtn) {
+                locationBtn.disabled = false;
+                locationBtn.textContent = 'Update Location';
+            }
             
             // Show the location map
             showLocationMap(latitude, longitude);
+            
+            // Update prayer times with new location
+            updatePrayerTimesForLocation(latitude, longitude);
+            
+            // Update real-time prayer times
+            updateRealTimePrayerTimesForLocation(latitude, longitude);
+            
+            console.log('Location update completed successfully');
+        }
+
+        function updatePrayerTimesForLocation(latitude, longitude) {
+            try {
+                console.log('Updating prayer times for new location:', latitude, longitude);
+                
+                // Show loading state for prayer times
+                const prayerTimesLoading = document.getElementById('prayer-times-loading');
+                const prayerTimesContent = document.getElementById('prayer-times-content');
+                if (prayerTimesLoading && prayerTimesContent) {
+                    prayerTimesLoading.style.display = 'block';
+                    prayerTimesContent.style.display = 'none';
+                    prayerTimesLoading.innerHTML = '🔄 Updating prayer times for new location...';
+                }
+                
+                // Get new prayer times for the location
+                const newPrayerTimes = getPrayerTimesForLocation(latitude, longitude);
+                prayerTimesData = newPrayerTimes;
+                
+                // Update the main prayer times display
+                displayPrayerTimes();
+                updateNextPrayer();
+                
+                // Update location info in prayer times section
+                const prayerLocationInfo = document.getElementById('prayer-location-info');
+                if (prayerLocationInfo) {
+                    getLocationName(latitude, longitude).then(locationName => {
+                        prayerLocationInfo.textContent = locationName;
+                        
+                        // Show success message
+                        if (prayerTimesLoading) {
+                            prayerTimesLoading.innerHTML = '✅ Prayer times updated for new location!';
+                            setTimeout(() => {
+                                if (prayerTimesContent) prayerTimesContent.style.display = 'block';
+                                if (prayerTimesLoading) prayerTimesLoading.style.display = 'none';
+                            }, 1500);
+                        }
+                    });
+                }
+                
+                console.log('Prayer times updated for new location');
+            } catch (error) {
+                console.error('Error updating prayer times for location:', error);
+                
+                // Show error state
+                const prayerTimesLoading = document.getElementById('prayer-times-loading');
+                if (prayerTimesLoading) {
+                    prayerTimesLoading.innerHTML = '❌ Error updating prayer times. Please try again.';
+                }
+            }
+        }
+
+        function updateRealTimePrayerTimesForLocation(latitude, longitude) {
+            try {
+                console.log('Updating real-time prayer times for new location:', latitude, longitude);
+                
+                const realTimeContent = document.getElementById('real-time-prayer-content');
+                const realTimeLocation = document.getElementById('real-time-prayer-location');
+                const realTimeGrid = document.getElementById('real-time-prayer-grid');
+                const realTimeLoading = document.getElementById('real-time-prayer-loading');
+                
+                if (!realTimeContent || !realTimeLocation || !realTimeGrid) {
+                    console.log('Real-time prayer elements not found');
+                    return;
+                }
+                
+                // Show loading state
+                if (realTimeLoading) {
+                    realTimeLoading.style.display = 'block';
+                    realTimeLoading.innerHTML = '🔄 Updating real-time prayer times...';
+                }
+                realTimeContent.style.display = 'none';
+                
+                // Get new prayer times for the location
+                const newPrayerTimes = getPrayerTimesForLocation(latitude, longitude);
+                
+                // Update location name
+                getLocationName(latitude, longitude).then(locationName => {
+                    realTimeLocation.textContent = locationName;
+                    
+                    // Update prayer times display
+                    displayRealTimePrayerTimes(newPrayerTimes);
+                    updateRealTimeNextPrayer(newPrayerTimes);
+                    
+                    // Show success state
+                    if (realTimeLoading) {
+                        realTimeLoading.innerHTML = '✅ Real-time prayer times updated!';
+                        setTimeout(() => {
+                            realTimeContent.style.display = 'block';
+                            realTimeLoading.style.display = 'none';
+                        }, 1000);
+                    } else {
+                        realTimeContent.style.display = 'block';
+                    }
+                    
+                    console.log('Real-time prayer times updated for new location');
+                });
+                
+            } catch (error) {
+                console.error('Error updating real-time prayer times for location:', error);
+                
+                // Show error state
+                if (realTimeLoading) {
+                    realTimeLoading.innerHTML = '❌ Error updating real-time prayer times.';
+                }
+            }
         }
 
         function getCityAndCountry(latitude, longitude) {
@@ -1387,29 +1977,38 @@
                     return response.json();
                 })
                 .then(data => {
+                    const cityElement = document.getElementById('city');
+                    const countryElement = document.getElementById('country');
+                    
                     if (data.address) {
                         const city = data.address.city || data.address.town || data.address.village || data.address.county || data.address.state || 'Unknown';
                         const country = data.address.country || 'Unknown';
                         const street = data.address.road || '';
                         const houseNumber = data.address.house_number || '';
                         
-                        document.getElementById('city').textContent = city;
-                        document.getElementById('country').textContent = country;
+                        if (cityElement) cityElement.textContent = city;
+                        if (countryElement) countryElement.textContent = country;
                         
                         // Add more detailed location info if available
-                        if (street && houseNumber) {
-                            document.getElementById('city').textContent = `${houseNumber} ${street}, ${city}`;
+                        if (street && houseNumber && cityElement) {
+                            cityElement.textContent = `${houseNumber} ${street}, ${city}`;
                         }
                     } else {
-                        document.getElementById('city').textContent = 'Unknown';
-                        document.getElementById('country').textContent = 'Unknown';
+                        if (cityElement) cityElement.textContent = 'Unknown';
+                        if (countryElement) countryElement.textContent = 'Unknown';
                     }
                 })
                 .catch(error => {
                     console.log('Error getting city/country:', error);
-                    document.getElementById('city').textContent = 'Unknown';
-                    document.getElementById('country').textContent = 'Unknown';
-                    locationError.textContent = 'Could not get detailed location information.';
+                    const cityElement = document.getElementById('city');
+                    const countryElement = document.getElementById('country');
+                    
+                    if (cityElement) cityElement.textContent = 'Unknown';
+                    if (countryElement) countryElement.textContent = 'Unknown';
+                    
+                    if (locationError) {
+                        locationError.textContent = 'Could not get detailed location information.';
+                    }
                 });
         }
 
@@ -1482,10 +2081,14 @@
                     errorMessage = error.message || 'An error occurred while getting location. Please try again.';
             }
 
-            locationError.textContent = errorMessage;
-            locationStatus.textContent = '';
-            locationBtn.disabled = false;
-            locationBtn.textContent = 'Get Location';
+            if (locationError) locationError.textContent = errorMessage;
+            if (locationStatus) locationStatus.textContent = '';
+            if (locationBtn) {
+                locationBtn.disabled = false;
+                locationBtn.textContent = 'Get Location';
+            }
+            
+            console.error('Location error:', error);
         }
 
         // Location Map Functions
@@ -1525,6 +2128,12 @@
             mapIframe.src = '';
         }
 
+
+
+
+
+
+
         // Navigation functionality
         document.querySelectorAll('.nav-item').forEach(item => {
             item.addEventListener('click', function() {
@@ -1534,6 +2143,200 @@
                 this.classList.add('active');
             });
         });
+
+        // Auto-load prayer times with location detection
+        document.addEventListener('DOMContentLoaded', function() {
+            const refreshBtn = document.getElementById('refresh-prayer-times-btn');
+            
+            if (refreshBtn) {
+                refreshBtn.addEventListener('click', function() {
+                    loadPrayerTimes();
+                });
+            }
+            
+            // Auto-load prayer times after 2 seconds
+            setTimeout(() => {
+                loadPrayerTimes();
+            }, 2000);
+        });
+
+        // Real-time Prayer Times Functions
+        function loadRealTimePrayerTimes() {
+            console.log('Loading real-time prayer times...');
+            
+            const realTimeLoading = document.getElementById('real-time-prayer-loading');
+            const realTimeContent = document.getElementById('real-time-prayer-content');
+            const realTimeLocation = document.getElementById('real-time-prayer-location');
+            const realTimeGrid = document.getElementById('real-time-prayer-grid');
+
+            if (!realTimeLoading || !realTimeContent || !realTimeLocation || !realTimeGrid) {
+                console.error('Required real-time prayer elements not found');
+                return;
+            }
+
+            // Show loading state
+            realTimeLoading.style.display = 'block';
+            realTimeContent.style.display = 'none';
+            realTimeLoading.innerHTML = '🔄 Getting location for prayer times...';
+
+            getCurrentPosition()
+                .then(position => {
+                    const { latitude, longitude } = position.coords;
+                    
+                    // Get prayer times for detected location
+                    const prayerTimes = getPrayerTimesForLocation(latitude, longitude);
+                    
+                    // Get location name
+                    return getLocationName(latitude, longitude).then(locationName => {
+                        realTimeLocation.textContent = locationName;
+                        displayRealTimePrayerTimes(prayerTimes);
+                        updateRealTimeNextPrayer(prayerTimes);
+                        
+                        // Show content and hide loading
+                        realTimeContent.style.display = 'block';
+                        realTimeLoading.style.display = 'none';
+                        
+                        console.log('Real-time prayer times loaded for location:', latitude, longitude);
+                    });
+                })
+                .catch(error => {
+                    console.error('Error loading real-time prayer times:', error);
+                    realTimeLoading.innerHTML = '❌ Error getting location. Please allow location access.';
+                    realTimeLoading.style.display = 'block';
+                    realTimeContent.style.display = 'none';
+                });
+        }
+
+        function displayRealTimePrayerTimes(prayerTimes) {
+            const realTimeGrid = document.getElementById('real-time-prayer-grid');
+            if (!realTimeGrid) return;
+
+            realTimeGrid.innerHTML = '';
+            
+            const prayers = [
+                { name: 'Fajr', icon: '🌅' },
+                { name: 'Sunrise', icon: '☀️' },
+                { name: 'Dhuhr', icon: '🌞' },
+                { name: 'Asr', icon: '🌅' },
+                { name: 'Maghrib', icon: '🌆' },
+                { name: 'Isha', icon: '🌙' }
+            ];
+
+            prayers.forEach(prayer => {
+                const time = prayerTimes[prayer.name];
+                if (!time) return;
+
+                const status = getPrayerStatus(time);
+                const card = document.createElement('div');
+                card.className = 'real-time-prayer-card';
+                card.innerHTML = `
+                    <div class="real-time-prayer-name">${prayer.icon} ${prayer.name}</div>
+                    <div class="real-time-prayer-time">${formatPrayerTime(time)}</div>
+                    <div class="real-time-prayer-status">${status}</div>
+                `;
+                realTimeGrid.appendChild(card);
+            });
+        }
+
+        function updateRealTimeNextPrayer(prayerTimes) {
+            const cards = document.querySelectorAll('.real-time-prayer-card');
+            const now = new Date();
+            const currentTime = now.getHours() * 60 + now.getMinutes();
+            
+            let nextPrayerIndex = -1;
+            let minDiff = Infinity;
+            
+            const prayers = ['Fajr', 'Sunrise', 'Dhuhr', 'Asr', 'Maghrib', 'Isha'];
+            
+            prayers.forEach((prayer, index) => {
+                const time = prayerTimes[prayer];
+                if (!time) return;
+                
+                const [hours, minutes] = time.split(':');
+                const prayerTime = parseInt(hours) * 60 + parseInt(minutes);
+                let diff = prayerTime - currentTime;
+                
+                if (diff < 0) diff += 1440; // Next day
+                
+                if (diff < minDiff) {
+                    minDiff = diff;
+                    nextPrayerIndex = index;
+                }
+            });
+            
+            // Remove previous highlights
+            cards.forEach(card => {
+                card.classList.remove('next', 'current');
+            });
+            
+            // Highlight next prayer
+            if (nextPrayerIndex >= 0 && cards[nextPrayerIndex]) {
+                cards[nextPrayerIndex].classList.add('next');
+            }
+            
+            // Highlight current prayer if it's within 10 minutes
+            prayers.forEach((prayer, index) => {
+                const time = prayerTimes[prayer];
+                if (!time) return;
+                
+                const [hours, minutes] = time.split(':');
+                const prayerTime = parseInt(hours) * 60 + parseInt(minutes);
+                let diff = Math.abs(prayerTime - currentTime);
+                
+                if (diff <= 10 && cards[index]) {
+                    cards[index].classList.add('current');
+                }
+            });
+        }
+
+        // Auto-load real-time prayer times
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load real-time prayer times after 3 seconds
+            setTimeout(() => {
+                loadRealTimePrayerTimes();
+            }, 3000);
+            
+            // Update real-time prayer times every minute
+            setInterval(() => {
+                const realTimeContent = document.getElementById('real-time-prayer-content');
+                if (realTimeContent && realTimeContent.style.display !== 'none') {
+                    updateRealTimeNextPrayer(prayerTimesData);
+                }
+            }, 60000);
+            
+            // Auto-refresh location every 5 minutes for live updates
+            setInterval(() => {
+                if (userLocation && userLocation.latitude && userLocation.longitude) {
+                    console.log('Auto-refreshing location for live updates...');
+                    getCurrentPosition()
+                        .then(position => {
+                            const newLat = position.coords.latitude;
+                            const newLon = position.coords.longitude;
+                            const newAcc = Math.round(position.coords.accuracy);
+                            
+                            // Only update if location changed significantly or accuracy improved
+                            const latDiff = Math.abs(newLat - userLocation.latitude);
+                            const lonDiff = Math.abs(newLon - userLocation.longitude);
+                            
+                            if (latDiff > 0.0001 || lonDiff > 0.0001 || newAcc < userLocation.accuracy) {
+                                console.log('Location updated automatically:', { latDiff, lonDiff, newAcc, oldAcc: userLocation.accuracy });
+                                showPosition(position);
+                            }
+                        })
+                        .catch(error => {
+                            console.log('Auto-location refresh failed:', error);
+                        });
+                }
+            }, 300000); // 5 minutes
+        });
+
+        // Update prayer times status every minute
+        setInterval(() => {
+            if (prayerTimesData) {
+                updateNextPrayer();
+                displayPrayerTimes(); // Refresh status text
+            }
+        }, 60000); // Update every minute
 
         // Add hover effects to prayer cards
         document.querySelectorAll('.prayer-card').forEach(card => {

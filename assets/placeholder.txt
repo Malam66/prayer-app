@@ -1,0 +1,8 @@
+This is a placeholder file for the assets directory.
+In a real project, you would place your app icons, splash screens, and other assets here.
+
+Required assets for this app:
+- icon.png (1024x1024)
+- splash.png (1242x2436)
+- adaptive-icon.png (1024x1024)
+- favicon.png (48x48) 
